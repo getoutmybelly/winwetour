@@ -3,200 +3,251 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Throughline — themed city tours, vetted by you</title>
+<title>Throughline — self-guided culture tours for any U.S. city</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
 <style>
   :root{
-    --ink:#0e1320; --ink-2:#141b2e; --ink-3:#1b2440; --line:#283353;
-    --text:#eef1f8; --muted:#9aa6c4; --faint:#61708f;
-    --coral:#ff6a4d; --coral-dim:#7d3322;
-    --high:#34d399; --med:#fbbf24; --low:#fb7185;
-    --display:'Bricolage Grotesque', system-ui, -apple-system, sans-serif;
-    --body:'Inter', system-ui, -apple-system, sans-serif;
-    --mono:'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+    --canvas:#fbfaf6; --card:#ffffff; --sand:#f4efe4; --sand-2:#efe7d6;
+    --ink:#1a1c19; --muted:#5d655e; --faint:#8b8f86;
+    --brand:#0c5c52; --brand-700:#0a4940; --brand-50:#e7f1ef;
+    --accent:#f2542d; --accent-700:#d8431f; --accent-50:#fdeae3;
+    --line:#e8e2d4; --line-soft:#f0ebdf;
+    --high:#0f9d63; --high-bg:#e7f6ee;
+    --med:#c2841a; --med-bg:#fbf2dd;
+    --low:#d6455f; --low-bg:#fce8ec;
+    --display:'Fraunces', Georgia, serif;
+    --ui:'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    --shadow-sm:0 1px 2px rgba(26,28,25,.05), 0 1px 3px rgba(26,28,25,.06);
+    --shadow-md:0 4px 14px rgba(26,28,25,.07), 0 2px 6px rgba(26,28,25,.05);
+    --shadow-lg:0 18px 50px rgba(26,28,25,.13), 0 6px 18px rgba(26,28,25,.07);
   }
   *{box-sizing:border-box}
   html,body{margin:0;padding:0}
-  body{
-    background:var(--ink);
-    color:var(--text);
-    font-family:var(--body);
-    -webkit-font-smoothing:antialiased;
-    line-height:1.5;
-    background-image:radial-gradient(circle at 18% -10%, rgba(255,106,77,.10), transparent 45%),
-                     radial-gradient(circle at 90% 8%, rgba(52,211,153,.06), transparent 40%);
-    background-attachment:fixed;
-    min-height:100vh;
-  }
-  .wrap{max-width:880px;margin:0 auto;padding:0 20px 80px}
+  body{background:var(--canvas);color:var(--ink);font-family:var(--ui);-webkit-font-smoothing:antialiased;line-height:1.5}
+  a{color:inherit}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 22px}
+  .narrow{max-width:940px;margin:0 auto;padding:0 22px}
 
-  /* ---------- header / stepper ---------- */
-  header.top{padding:26px 0 14px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
-  .brand{display:flex;align-items:center;gap:11px}
-  .brand .nodeicon{width:26px;height:26px;flex:0 0 auto}
-  .brand h1{font-family:var(--display);font-weight:800;font-size:23px;letter-spacing:-.02em;margin:0;line-height:1}
-  .brand .tag{font-size:12px;color:var(--faint);margin-top:3px;font-family:var(--mono);letter-spacing:.01em}
-  .stepper{display:flex;align-items:center;gap:0;font-family:var(--mono);font-size:11.5px}
-  .step{display:flex;align-items:center;gap:7px;color:var(--faint);cursor:default}
-  .step.clickable{cursor:pointer}
-  .step.clickable:hover{color:var(--muted)}
-  .step .dot{width:20px;height:20px;border-radius:50%;border:1.5px solid var(--line);display:grid;place-items:center;font-size:10px;color:var(--faint);transition:.2s}
-  .step.active{color:var(--text)}
-  .step.active .dot{border-color:var(--coral);color:var(--coral);box-shadow:0 0 0 3px rgba(255,106,77,.13)}
-  .step.done .dot{background:var(--coral);border-color:var(--coral);color:#1a0d08}
-  .step.done{color:var(--muted)}
-  .seg{width:22px;height:1.5px;background:var(--line);margin:0 4px}
-  .seg.done{background:var(--coral)}
-  @media(max-width:560px){.step .label{display:none}.seg{width:12px}}
+  /* ---------- nav ---------- */
+  nav.bar{position:sticky;top:0;z-index:30;background:rgba(251,250,246,.82);backdrop-filter:blur(12px);border-bottom:1px solid var(--line-soft)}
+  nav.bar .row{display:flex;align-items:center;justify-content:space-between;height:64px}
+  .logo{display:flex;align-items:center;gap:10px;cursor:pointer}
+  .logo svg{width:26px;height:26px}
+  .logo b{font-family:var(--display);font-weight:600;font-size:20px;letter-spacing:-.02em}
+  .logo .beta{font-size:10px;font-weight:700;color:var(--accent);background:var(--accent-50);padding:2px 7px;border-radius:20px;letter-spacing:.04em;text-transform:uppercase}
+  .navlinks{display:flex;gap:26px;align-items:center;font-size:14px;font-weight:500;color:var(--muted)}
+  .navlinks a{cursor:pointer;text-decoration:none}
+  .navlinks a:hover{color:var(--ink)}
+  @media(max-width:640px){.navlinks{display:none}}
 
-  h2.screen-title{font-family:var(--display);font-weight:800;font-size:30px;letter-spacing:-.025em;margin:30px 0 4px}
-  .screen-sub{color:var(--muted);font-size:15px;margin:0 0 24px;max-width:54ch}
+  /* ---------- hero ---------- */
+  .hero{position:relative;overflow:hidden;padding:64px 0 48px;
+    background:radial-gradient(120% 90% at 80% -10%, var(--brand-50), transparent 55%),
+               radial-gradient(90% 70% at 8% 0%, #fdeee6, transparent 50%);}
+  .hero .map-tex{position:absolute;inset:0;opacity:.5;pointer-events:none}
+  .hero-inner{position:relative;text-align:center;max-width:760px;margin:0 auto}
+  .eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:600;color:var(--brand);
+    background:#fff;border:1px solid var(--line);padding:6px 13px;border-radius:30px;box-shadow:var(--shadow-sm);margin-bottom:20px}
+  .eyebrow .pulse{width:7px;height:7px;border-radius:50%;background:var(--accent)}
+  h1.hero-h{font-family:var(--display);font-weight:600;font-size:clamp(38px,6vw,66px);line-height:1.02;letter-spacing:-.03em;margin:0 0 18px}
+  h1.hero-h em{font-style:italic;color:var(--brand)}
+  .hero-sub{font-size:clamp(16px,2.2vw,19px);color:var(--muted);max-width:560px;margin:0 auto 30px;line-height:1.55}
 
-  /* ---------- theme grid ---------- */
-  .theme-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
-  @media(max-width:680px){.theme-grid{grid-template-columns:repeat(2,1fr)}}
-  .theme-tile{
-    background:var(--ink-2);border:1px solid var(--line);border-radius:14px;
-    padding:18px 14px 16px;cursor:pointer;text-align:left;color:var(--text);
-    font-family:var(--body);transition:transform .15s ease, border-color .15s, background .15s;
-    display:flex;flex-direction:column;gap:14px;min-height:118px;position:relative;
-  }
-  .theme-tile:hover{transform:translateY(-3px);border-color:var(--coral);background:var(--ink-3)}
-  .theme-tile:focus-visible{outline:2px solid var(--coral);outline-offset:2px}
-  .theme-tile.sel{border-color:var(--coral);background:var(--ink-3);box-shadow:0 0 0 1px var(--coral)}
-  .theme-tile svg{width:30px;height:30px;color:var(--coral);stroke:var(--coral)}
-  .theme-tile .tname{font-family:var(--display);font-weight:600;font-size:16px;letter-spacing:-.01em}
-  .theme-tile .seeded{position:absolute;top:11px;right:11px;font-family:var(--mono);font-size:9.5px;color:var(--high);border:1px solid rgba(52,211,153,.4);border-radius:20px;padding:2px 7px;letter-spacing:.03em}
+  /* ---------- search card ---------- */
+  .search-card{background:var(--card);border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow-lg);
+    padding:14px;max-width:840px;margin:0 auto;text-align:left}
+  .search-grid{display:grid;grid-template-columns:1.1fr 1fr 1fr auto;gap:8px;align-items:stretch}
+  @media(max-width:760px){.search-grid{grid-template-columns:1fr 1fr}}
+  @media(max-width:480px){.search-grid{grid-template-columns:1fr}}
+  .sfield{position:relative;background:var(--canvas);border:1px solid transparent;border-radius:15px;padding:11px 14px;transition:.15s;cursor:pointer}
+  .sfield:hover{background:#f6f3ec}
+  .sfield:focus-within{background:#fff;border-color:var(--brand);box-shadow:0 0 0 3px var(--brand-50)}
+  .sfield label{display:block;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--faint);margin-bottom:3px}
+  .sfield select{width:100%;border:none;background:transparent;font-family:var(--ui);font-size:15.5px;font-weight:600;color:var(--ink);
+    appearance:none;cursor:pointer;padding-right:18px;outline:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='7' viewBox='0 0 11 7'%3E%3Cpath d='M1 1l4.5 4.5L10 1' stroke='%235d655e' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat:no-repeat;background-position:right center}
+  .sfield select:disabled{color:var(--faint);cursor:not-allowed}
+  .search-cta{display:flex;align-items:stretch}
+  .btn{font-family:var(--ui);font-weight:700;border:none;border-radius:15px;cursor:pointer;transition:.16s;
+    display:inline-flex;align-items:center;justify-content:center;gap:9px;white-space:nowrap}
+  .btn:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+  .btn-primary{background:var(--accent);color:#fff;box-shadow:0 6px 16px rgba(242,84,45,.28)}
+  .btn-primary:hover{background:var(--accent-700)}
+  .btn-primary:disabled{background:#e7ddd0;color:#a59c8d;box-shadow:none;cursor:not-allowed}
+  .btn-lg{font-size:16px;padding:0 30px;min-height:62px}
+  .btn-block{width:100%}
+  @media(max-width:760px){.search-cta{grid-column:1/-1}.btn-block-sm{width:100%}}
+  .btn-md{font-size:15px;padding:14px 24px}
+  .btn-ghost{background:#fff;color:var(--ink);border:1px solid var(--line);font-weight:600}
+  .btn-ghost:hover{border-color:var(--brand);color:var(--brand)}
+  .btn-sm{font-size:13.5px;padding:9px 15px;border-radius:12px;font-weight:600}
+  .search-hint{font-size:13px;color:var(--muted);padding:11px 6px 4px;display:flex;align-items:center;gap:8px}
+  .search-hint .hi{width:6px;height:6px;border-radius:50%;flex:0 0 auto}
+  .hi.live{background:var(--accent)} .hi.sample{background:var(--high)} .hi.none{background:var(--faint)}
 
-  /* ---------- place select ---------- */
-  .field{margin-bottom:18px}
-  .field label{display:block;font-family:var(--mono);font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px}
-  select{
-    width:100%;background:var(--ink-2);color:var(--text);border:1px solid var(--line);
-    border-radius:11px;padding:13px 14px;font-family:var(--body);font-size:15px;cursor:pointer;
-    appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%239aa6c4' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E");
-    background-repeat:no-repeat;background-position:right 15px center;
-  }
-  select:focus-visible{outline:2px solid var(--coral);outline-offset:1px;border-color:var(--coral)}
-  select:disabled{opacity:.45;cursor:not-allowed}
-  .availability{font-family:var(--mono);font-size:12px;margin-top:6px;display:flex;align-items:center;gap:7px}
-  .availability.has{color:var(--high)}
-  .availability.none{color:var(--faint)}
+  /* ---------- trust badges ---------- */
+  .badges{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;margin-top:26px}
+  .badge{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-weight:600;color:var(--brand-700);
+    background:#fff;border:1px solid var(--line);border-radius:30px;padding:7px 14px;box-shadow:var(--shadow-sm)}
+  .badge svg{width:14px;height:14px;color:var(--brand)}
 
-  /* ---------- buttons ---------- */
-  .btn{
-    font-family:var(--body);font-weight:600;font-size:14.5px;border-radius:11px;
-    padding:12px 20px;cursor:pointer;border:1px solid transparent;transition:.15s;display:inline-flex;
-    align-items:center;gap:8px;
-  }
-  .btn:focus-visible{outline:2px solid var(--coral);outline-offset:2px}
-  .btn-primary{background:var(--coral);color:#1a0d08;border-color:var(--coral)}
-  .btn-primary:hover{filter:brightness(1.08)}
-  .btn-primary:disabled{background:var(--ink-3);color:var(--faint);border-color:var(--line);cursor:not-allowed;filter:none}
-  .btn-ghost{background:transparent;color:var(--muted);border-color:var(--line)}
-  .btn-ghost:hover{color:var(--text);border-color:var(--muted)}
-  .btn-tiny{font-size:12.5px;padding:7px 12px;border-radius:9px}
-  .actbar{display:flex;gap:12px;margin-top:26px;flex-wrap:wrap;align-items:center}
+  /* ---------- sections ---------- */
+  section.block{padding:56px 0}
+  .sec-head{margin-bottom:28px;max-width:620px}
+  .sec-head .kick{font-size:12.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--accent);margin-bottom:9px}
+  .sec-head h2{font-family:var(--display);font-weight:600;font-size:clamp(26px,3.6vw,38px);letter-spacing:-.025em;margin:0 0 8px;line-height:1.08}
+  .sec-head p{color:var(--muted);font-size:16px;margin:0;line-height:1.55}
 
-  /* ---------- verify banner ---------- */
-  .verify-banner{
-    display:flex;gap:12px;align-items:flex-start;background:rgba(251,191,36,.07);
-    border:1px solid rgba(251,191,36,.32);border-radius:12px;padding:13px 15px;margin-bottom:22px;
-  }
-  .verify-banner svg{flex:0 0 auto;width:19px;height:19px;color:var(--med);margin-top:1px}
-  .verify-banner .vb-t{font-weight:600;font-size:14px;color:#fcd96a}
-  .verify-banner .vb-d{font-size:13px;color:var(--muted);margin-top:2px}
+  /* theme grid */
+  .theme-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  @media(max-width:820px){.theme-grid{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:520px){.theme-grid{grid-template-columns:1fr}}
+  .tcard{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px;cursor:pointer;text-align:left;
+    font-family:var(--ui);transition:transform .18s ease, box-shadow .18s, border-color .18s;position:relative;display:flex;gap:15px;align-items:flex-start}
+  .tcard:hover{transform:translateY(-4px);box-shadow:var(--shadow-md);border-color:var(--line)}
+  .tcard:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+  .tcard.sel{border-color:var(--brand);box-shadow:0 0 0 2px var(--brand-50)}
+  .ticon{width:46px;height:46px;border-radius:13px;display:grid;place-items:center;flex:0 0 auto}
+  .ticon svg{width:23px;height:23px}
+  .tcard h3{font-family:var(--display);font-weight:600;font-size:18px;margin:0 0 4px;letter-spacing:-.01em}
+  .tcard p{font-size:13.5px;color:var(--muted);margin:0;line-height:1.45}
+  .tag-sample{position:absolute;top:15px;right:15px;font-size:10px;font-weight:700;color:var(--high);background:var(--high-bg);
+    padding:3px 9px;border-radius:20px;letter-spacing:.03em;text-transform:uppercase}
 
-  /* ---------- stop cards ---------- */
-  .listmeta{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px;flex-wrap:wrap;gap:8px}
-  .listmeta .cnt{font-family:var(--mono);font-size:12.5px;color:var(--muted)}
-  .listmeta .cnt b{color:var(--coral)}
-  .cards{display:flex;flex-direction:column;gap:13px}
-  .card{
-    background:var(--ink-2);border:1px solid var(--line);border-radius:14px;padding:16px 17px;
-    position:relative;transition:border-color .15s, background .15s;animation:rise .35s ease both;
-  }
-  @keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-  .card.included{border-color:var(--coral);background:var(--ink-3)}
-  .card-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
-  .card h3{font-family:var(--display);font-weight:600;font-size:18px;letter-spacing:-.015em;margin:0}
-  .card .where{font-size:12.5px;color:var(--faint);font-family:var(--mono);margin-top:3px}
-  .card .desc{font-size:14px;color:var(--muted);margin:10px 0 13px;line-height:1.55}
-  .metarow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-family:var(--mono);font-size:11.5px}
-  .chip{display:inline-flex;align-items:center;gap:6px;padding:4px 9px;border-radius:7px;border:1px solid var(--line);background:rgba(255,255,255,.02)}
+  /* how it works */
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+  @media(max-width:760px){.steps{grid-template-columns:1fr}}
+  .stepc{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:24px}
+  .stepc .num{font-family:var(--display);font-weight:600;font-size:15px;color:#fff;background:var(--brand);width:34px;height:34px;border-radius:50%;display:grid;place-items:center;margin-bottom:15px}
+  .stepc h4{font-family:var(--display);font-weight:600;font-size:18px;margin:0 0 7px;letter-spacing:-.01em}
+  .stepc p{font-size:14px;color:var(--muted);margin:0;line-height:1.55}
+
+  footer{border-top:1px solid var(--line-soft);padding:30px 0;margin-top:20px}
+  footer .row{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;color:var(--faint);font-size:13px}
+
+  /* ---------- app screens (stops / route) ---------- */
+  .screen-wrap{padding:30px 0 70px;min-height:60vh}
+  .backlink{background:none;border:none;cursor:pointer;color:var(--muted);font-family:var(--ui);font-weight:600;font-size:14px;
+    display:inline-flex;align-items:center;gap:7px;padding:6px 0;margin-bottom:10px}
+  .backlink:hover{color:var(--brand)}
+  .screen-title{font-family:var(--display);font-weight:600;font-size:clamp(28px,4vw,40px);letter-spacing:-.025em;margin:6px 0 4px}
+  .screen-meta{color:var(--muted);font-size:15px;margin:0 0 22px}
+  .screen-meta b{color:var(--ink)}
+
+  .infostrip{display:flex;gap:13px;align-items:flex-start;background:var(--brand-50);border:1px solid #cfe3df;border-radius:16px;padding:16px 18px;margin-bottom:22px}
+  .infostrip .ic{width:38px;height:38px;border-radius:11px;background:var(--brand);display:grid;place-items:center;flex:0 0 auto}
+  .infostrip .ic svg{width:19px;height:19px;color:#fff}
+  .infostrip .it{font-family:var(--display);font-weight:600;font-size:16px;color:var(--brand-700)}
+  .infostrip .id{font-size:13.5px;color:#3f5a55;margin-top:2px;line-height:1.5}
+  .ministrip{display:flex;flex-wrap:wrap;gap:7px;margin-top:11px}
+  .minibadge{font-size:11.5px;font-weight:600;color:var(--brand-700);background:#fff;border:1px solid #cfe3df;border-radius:20px;padding:4px 10px;display:inline-flex;align-items:center;gap:5px}
+  .minibadge svg{width:12px;height:12px;color:var(--brand)}
+
+  .list-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:10px}
+  .list-head .cnt{font-size:14px;color:var(--muted)}
+  .list-head .cnt b{color:var(--accent)}
+  .cards{display:flex;flex-direction:column;gap:14px}
+  .scard{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:var(--shadow-sm);
+    transition:box-shadow .15s, border-color .15s;animation:rise .35s ease both}
+  @keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  .scard.on{border-color:var(--brand);box-shadow:0 0 0 2px var(--brand-50), var(--shadow-md)}
+  .scard-top{display:flex;justify-content:space-between;gap:14px;align-items:flex-start}
+  .scard h3{font-family:var(--display);font-weight:600;font-size:21px;letter-spacing:-.015em;margin:0 0 3px}
+  .scard .loc{font-size:13px;color:var(--faint);font-weight:500;display:flex;align-items:center;gap:6px}
+  .scard .loc svg{width:13px;height:13px;color:var(--accent)}
+  .scard .desc{font-size:14.5px;color:var(--muted);margin:12px 0 14px;line-height:1.6}
+  .metarow{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+  .chip{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;border-radius:30px;padding:5px 11px;border:1px solid transparent}
   .chip .cd{width:7px;height:7px;border-radius:50%}
-  .chip.conf-high .cd{background:var(--high)} .chip.conf-high{color:var(--high);border-color:rgba(52,211,153,.35)}
-  .chip.conf-medium .cd{background:var(--med)} .chip.conf-medium{color:var(--med);border-color:rgba(251,191,36,.35)}
-  .chip.conf-low .cd{background:var(--low)} .chip.conf-low{color:var(--low);border-color:rgba(251,113,133,.35)}
-  .chip.ver-unverified{color:var(--faint)}
-  .chip.ver-verified{color:var(--high);border-color:rgba(52,211,153,.35)}
-  .chip.ver-flagged{color:var(--med);border-color:rgba(251,191,36,.35)}
-  .srclink{color:var(--muted);text-decoration:none;border-bottom:1px dotted var(--faint)}
-  .srclink:hover{color:var(--coral);border-color:var(--coral)}
-  .flags{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
-  .flagchip{display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-size:10.5px;color:#f1c45a;background:rgba(251,191,36,.07);border:1px solid rgba(251,191,36,.26);border-radius:6px;padding:3px 8px;letter-spacing:.02em}
-  .flagchip svg{width:10px;height:10px;color:var(--med);flex:0 0 auto}
-  .rstop .flags{margin-top:9px}
-  .rstop .flagchip{font-size:10px}
-  .card-actions{display:flex;gap:9px;margin-top:14px;flex-wrap:wrap;align-items:center}
-  .iconbtn{background:transparent;border:none;color:var(--faint);cursor:pointer;font-family:var(--mono);font-size:12px;display:inline-flex;align-items:center;gap:5px;padding:6px 4px}
-  .iconbtn:hover{color:var(--low)}
-  .iconbtn.add{color:var(--muted)} .iconbtn.add:hover{color:var(--coral)}
-  .iconbtn.added{color:var(--coral)}
-  .iconbtn.ver:hover{color:var(--high)}
-  .iconbtn:focus-visible{outline:2px solid var(--coral);outline-offset:2px;border-radius:6px}
+  .chip.conf-high{color:#0a7a4c;background:var(--high-bg)} .chip.conf-high .cd{background:var(--high)}
+  .chip.conf-medium{color:#9a6712;background:var(--med-bg)} .chip.conf-medium .cd{background:var(--med)}
+  .chip.conf-low{color:#b33850;background:var(--low-bg)} .chip.conf-low .cd{background:var(--low)}
+  .chip.ver{background:var(--sand);color:var(--muted)}
+  .chip.ver-verified{background:var(--high-bg);color:#0a7a4c}
+  .chip.ver-flagged{background:var(--med-bg);color:#9a6712}
+  .chip.src{background:#fff;border-color:var(--line);color:var(--muted);font-weight:500}
+  .chip.src a{color:var(--brand);font-weight:600;text-decoration:none}
+  .chip.src a:hover{text-decoration:underline}
+  .flags{display:flex;flex-wrap:wrap;gap:7px;margin-top:11px}
+  .flagchip{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:600;color:#9a6712;background:var(--med-bg);
+    border:1px solid #f0dcad;border-radius:8px;padding:4px 9px}
+  .flagchip svg{width:11px;height:11px;color:var(--med);flex:0 0 auto}
+  .scard-actions{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap;align-items:center}
+  .addbtn{font-family:var(--ui);font-weight:700;font-size:13.5px;border-radius:11px;padding:10px 18px;cursor:pointer;transition:.15s;
+    border:1.5px solid var(--accent);background:#fff;color:var(--accent-700)}
+  .addbtn:hover{background:var(--accent-50)}
+  .addbtn.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .linkbtn{background:none;border:none;cursor:pointer;color:var(--faint);font-family:var(--ui);font-weight:600;font-size:13px;padding:8px 4px}
+  .linkbtn:hover{color:var(--low)}
+  .linkbtn.ok:hover{color:var(--high)}
 
-  /* ---------- route view ---------- */
-  .modebar{display:inline-flex;background:var(--ink-2);border:1px solid var(--line);border-radius:11px;padding:4px;gap:4px;margin-bottom:20px}
-  .modebar button{background:transparent;border:none;color:var(--muted);font-family:var(--body);font-weight:500;font-size:13.5px;padding:8px 16px;border-radius:8px;cursor:pointer;display:flex;align-items:center;gap:7px;transition:.15s}
-  .modebar button.on{background:var(--coral);color:#1a0d08;font-weight:600}
-  .modebar button:focus-visible{outline:2px solid var(--coral);outline-offset:2px}
-  .route{position:relative;padding-left:38px}
-  .route::before{content:"";position:absolute;left:13px;top:14px;bottom:40px;width:2px;background:repeating-linear-gradient(var(--coral) 0 7px, transparent 7px 14px)}
-  .rstop{position:relative;background:var(--ink-2);border:1px solid var(--line);border-radius:13px;padding:14px 15px;margin-bottom:0}
-  .rnode{position:absolute;left:-38px;top:14px;width:28px;height:28px;border-radius:50%;background:var(--coral);color:#1a0d08;font-family:var(--display);font-weight:800;font-size:14px;display:grid;place-items:center;box-shadow:0 0 0 4px var(--ink)}
-  .rstop h4{font-family:var(--display);font-weight:600;font-size:16px;margin:0 0 4px;letter-spacing:-.01em}
-  .rstop .rmeta{font-family:var(--mono);font-size:11.5px;color:var(--faint);display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-  .rstop .rctl{display:flex;gap:4px;margin-top:11px}
-  .rstop .rctl button{background:var(--ink-3);border:1px solid var(--line);color:var(--muted);width:30px;height:30px;border-radius:8px;cursor:pointer;display:grid;place-items:center;transition:.15s}
-  .rstop .rctl button:hover:not(:disabled){border-color:var(--coral);color:var(--coral)}
-  .rstop .rctl button:disabled{opacity:.3;cursor:not-allowed}
-  .rstop .rctl button:focus-visible{outline:2px solid var(--coral);outline-offset:1px}
-  .rstop .rctl button.del:hover{border-color:var(--low);color:var(--low)}
-  .leg{position:relative;font-family:var(--mono);font-size:11px;color:var(--faint);padding:9px 0 9px 2px;display:flex;align-items:center;gap:7px}
-  .leg svg{width:13px;height:13px;color:var(--coral)}
-  .total-card{background:linear-gradient(135deg,var(--ink-3),var(--ink-2));border:1px solid var(--coral);border-radius:14px;padding:18px 19px;margin-top:24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px}
-  .total-card .tl{font-family:var(--mono);font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
-  .total-card .tv{font-family:var(--display);font-weight:800;font-size:26px;letter-spacing:-.02em}
-  .total-card .tnote{font-family:var(--mono);font-size:11px;color:var(--faint);margin-top:3px}
+  .floatbar{position:sticky;bottom:18px;margin-top:24px;z-index:10}
+  .floatbar-inner{background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow-lg);padding:14px 18px;
+    display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}
+  .floatbar .fb-l{font-size:14px;color:var(--muted)} .floatbar .fb-l b{color:var(--ink)}
 
-  /* ---------- empty / loading ---------- */
-  .empty{text-align:center;padding:46px 20px;border:1px dashed var(--line);border-radius:16px;background:var(--ink-2)}
-  .empty svg{width:34px;height:34px;color:var(--faint);margin-bottom:14px}
-  .empty h3{font-family:var(--display);font-weight:600;font-size:19px;margin:0 0 8px}
-  .empty p{color:var(--muted);font-size:14px;max-width:46ch;margin:0 auto;line-height:1.6}
-  .empty .seam{font-family:var(--mono);font-size:12px;color:var(--coral);margin-top:14px}
-  .loading{display:flex;flex-direction:column;align-items:center;gap:16px;padding:60px 0;color:var(--muted)}
-  .spinner{width:34px;height:34px;border:3px solid var(--line);border-top-color:var(--coral);border-radius:50%;animation:spin .8s linear infinite}
-  .loading .lmsg{font-family:var(--mono);font-size:13px}
+  /* map panel */
+  .mappanel{background:var(--card);border:1px solid var(--line);border-radius:20px;overflow:hidden;box-shadow:var(--shadow-sm);margin-bottom:22px}
+  .mappanel svg{display:block;width:100%;height:auto}
+  .mapcap{font-size:12px;color:var(--faint);padding:11px 18px;border-top:1px solid var(--line-soft);display:flex;align-items:center;gap:7px}
+  .mapcap svg{width:13px;height:13px;color:var(--accent)}
+
+  /* mode + route */
+  .toolbar{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:20px}
+  .modebar{display:inline-flex;background:var(--sand);border-radius:13px;padding:4px;gap:3px}
+  .modebar button{background:transparent;border:none;font-family:var(--ui);font-weight:600;font-size:14px;color:var(--muted);
+    padding:9px 18px;border-radius:10px;cursor:pointer;display:flex;align-items:center;gap:7px;transition:.15s}
+  .modebar button.on{background:#fff;color:var(--brand);box-shadow:var(--shadow-sm)}
+  .modebar button:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+  .modebar svg{width:16px;height:16px}
+
+  .rcard{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 18px;display:flex;gap:15px;align-items:center;box-shadow:var(--shadow-sm)}
+  .rnode{width:38px;height:38px;border-radius:12px;background:var(--accent);color:#fff;font-family:var(--display);font-weight:600;font-size:17px;display:grid;place-items:center;flex:0 0 auto}
+  .rcard .rbody{flex:1;min-width:0}
+  .rcard h4{font-family:var(--display);font-weight:600;font-size:17px;margin:0 0 3px;letter-spacing:-.01em}
+  .rcard .rsub{font-size:12.5px;color:var(--muted);display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+  .rcard .rctl{display:flex;gap:5px;flex:0 0 auto}
+  .rcard .rctl button{width:34px;height:34px;border-radius:10px;border:1px solid var(--line);background:#fff;color:var(--muted);cursor:pointer;display:grid;place-items:center;transition:.15s;font-size:15px}
+  .rcard .rctl button:hover:not(:disabled){border-color:var(--brand);color:var(--brand)}
+  .rcard .rctl button:disabled{opacity:.35;cursor:not-allowed}
+  .rcard .rctl button.del:hover{border-color:var(--low);color:var(--low)}
+  .rleg{font-size:12px;color:var(--faint);font-weight:600;padding:8px 0 8px 19px;display:flex;align-items:center;gap:8px}
+  .rleg svg{width:14px;height:14px;color:var(--accent)}
+  .rleg .dots{flex:0 0 auto;width:2px;height:18px;background:repeating-linear-gradient(var(--accent) 0 4px,transparent 4px 8px);margin-left:17px;margin-right:6px}
+
+  .itin{background:linear-gradient(135deg,var(--brand),var(--brand-700));border-radius:20px;padding:24px;margin-top:24px;color:#fff;
+    display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap}
+  .itin .il{font-size:12px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:#a7d4cc}
+  .itin .iv{font-family:var(--display);font-weight:600;font-size:32px;letter-spacing:-.02em;line-height:1}
+  .itin .inote{font-size:12.5px;color:#bfe0da;margin-top:6px}
+  .itin .iact{display:flex;gap:10px;flex-wrap:wrap}
+  .btn-onbrand{background:#fff;color:var(--brand-700)}
+  .btn-onbrand:hover{background:#eef7f5}
+  .btn-onbrand-ghost{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.3)}
+  .btn-onbrand-ghost:hover{background:rgba(255,255,255,.2)}
+
+  .empty{text-align:center;padding:54px 24px;background:var(--card);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow-sm)}
+  .empty .eic{width:58px;height:58px;border-radius:17px;background:var(--accent-50);display:grid;place-items:center;margin:0 auto 18px}
+  .empty .eic svg{width:27px;height:27px;color:var(--accent)}
+  .empty h3{font-family:var(--display);font-weight:600;font-size:22px;margin:0 0 9px;letter-spacing:-.01em}
+  .empty p{color:var(--muted);font-size:14.5px;max-width:50ch;margin:0 auto;line-height:1.6}
+  .empty .seam{font-size:13px;color:var(--brand);font-weight:600;margin-top:14px;background:var(--brand-50);display:inline-block;padding:7px 14px;border-radius:10px}
+
+  .loading{display:flex;flex-direction:column;align-items:center;gap:18px;padding:70px 0;color:var(--muted)}
+  .spinner{width:38px;height:38px;border:3px solid var(--sand-2);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite}
+  .loading .lmsg{font-size:14.5px;font-weight:600}
   @keyframes spin{to{transform:rotate(360deg)}}
 
-  /* ---------- toast ---------- */
-  .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);background:var(--ink-3);border:1px solid var(--coral);color:var(--text);font-family:var(--mono);font-size:13px;padding:12px 18px;border-radius:11px;box-shadow:0 10px 30px rgba(0,0,0,.4);animation:rise .25s ease;z-index:50}
+  .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);background:var(--ink);color:#fff;font-size:13.5px;font-weight:600;
+    padding:13px 20px;border-radius:13px;box-shadow:var(--shadow-lg);animation:rise .25s ease;z-index:60}
 
-  a.link{color:var(--coral);text-decoration:none}
-  a.link:hover{text-decoration:underline}
-  .backlink{font-family:var(--mono);font-size:12.5px;color:var(--faint);background:none;border:none;cursor:pointer;padding:4px 0;display:inline-flex;align-items:center;gap:6px}
-  .backlink:hover{color:var(--coral)}
-
-  @media(prefers-reduced-motion:reduce){
-    *{animation:none!important;transition:none!important}
-  }
+  @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
@@ -205,487 +256,557 @@
 <script type="text/babel" data-presets="react">
 const { useState, useMemo, useCallback } = React;
 
-/* ============================================================
-   DATA LAYER — the ONLY thing that changes when you go live.
-   ------------------------------------------------------------
-   Today: returns seeded sample data after a simulated delay so
-   the whole flow is real and testable.
-
-   Later: replace the body of researchStops() with one of:
-     1. CLAUDE API  — POST to your worker -> Anthropic /v1/messages,
-                       prompt it to return ONLY a JSON array of stops.
-     2. SEARCH API  — Google Places / SerpAPI / Wikipedia; map each
-                       result into the Stop shape below.
-     3. SCRAPER     — your Cloudflare Worker crawls Mural Arts, city
-                       arts registries, etc. and returns Stop[].
-
-   The UI depends ONLY on the Stop shape, never on the source.
-   That is the seam. Swap the source, the app keeps working.
-
-   Stop shape:
-   {
-     id:            string
-     name:          string
-     neighborhood:  string
-     description:   string
-     lat, lng:      number          // for distance / route estimates
-     address:       string
-     source:        { name, url }   // where this claim came from
-     confidence:    'high'|'medium'|'low'
-     verification:  'unverified'|'verified'|'flagged'
-     estimatedMinutes: number       // suggested time AT the stop (placeholder)
-     themeMatch:    string
-   }
-   ============================================================ */
+/* ============================================================================
+   DATA LAYER — researchStops() is the only seam.
+   Sample data exists ONLY for the two seeded cities below. Every other
+   city/theme routes to live research via the Cloudflare Worker. Paste your
+   deployed Worker URL into WORKER_URL to turn live research on.
+   ========================================================================== */
+const WORKER_URL = ""; // e.g. "https://throughline-research.<sub>.workers.dev"
 
 const SAMPLE = {
   "murals|Philadelphia": [
-    { id:"phl-1", name:"Common Threads", neighborhood:"North Broad St", lat:39.9628, lng:-75.1626,
-      address:"Broad & Spring Garden St", themeMatch:"large-scale mural",
-      description:"Meg Saligman's eight-story figures are one of the most photographed murals in the city. A natural anchor for a downtown mural walk.",
-      source:{name:"Mural Arts Philadelphia", url:"https://www.muralarts.org/"}, confidence:"high", verification:"unverified", estimatedMinutes:20 },
-    { id:"phl-2", name:"A Love Letter For You", neighborhood:"West Philadelphia", lat:39.9560, lng:-75.2150,
-      address:"Market St, along the El", themeMatch:"mural series",
-      description:"Steve Powers painted a series of rooftop messages best seen riding the Market-Frankford El westbound. It is a moving viewing tour rather than a single wall.",
-      source:{name:"Mural Arts Philadelphia", url:"https://www.muralarts.org/"}, confidence:"high", verification:"unverified", estimatedMinutes:45 },
-    { id:"phl-3", name:"How Philly Moves", neighborhood:"Near the Airport", lat:39.8870, lng:-75.2410,
-      address:"S 20th St area", themeMatch:"mural",
-      description:"A sweeping dance-themed mural. Location and best vantage point are worth confirming before you build it into a walking loop.",
-      source:{name:"Mural Arts Philadelphia", url:"https://www.muralarts.org/"}, confidence:"medium", verification:"unverified", estimatedMinutes:15, warningFlags:["approximate-location"] },
-    { id:"phl-4", name:"Garden of Delight", neighborhood:"Spring Garden", lat:39.9700, lng:-75.1500,
-      address:"Spring Garden corridor", themeMatch:"mural",
-      description:"Listed in several walking-tour roundups. Exact wall and current condition should be verified against the arts registry.",
-      source:{name:"Visit Philadelphia", url:"https://www.visitphilly.com/"}, confidence:"medium", verification:"unverified", estimatedMinutes:15, warningFlags:["single-source"] },
-    { id:"phl-5", name:"Holding Grandmother's Quilt", neighborhood:"uncertain", lat:39.9800, lng:-75.1700,
-      address:"location unconfirmed", themeMatch:"mural (unconfirmed)",
-      description:"Surfaced in a low-quality aggregator with no corroborating source. Flagged so you do not route to a wall that may not exist or may have moved.",
-      source:{name:"Unverified aggregator", url:"https://www.muralarts.org/"}, confidence:"low", verification:"flagged", estimatedMinutes:10, warningFlags:["approximate-location","single-source","may-be-removed"] },
+    { name:"Common Threads", neighborhood:"North Broad St", address:"Broad & Spring Garden St", latitude:39.9628, longitude:-75.1626,
+      description:"Meg Saligman's eight-story figures are among the most photographed murals in the city — a natural anchor for a downtown mural walk.",
+      sourceName:"Mural Arts Philadelphia", sourceUrl:"https://www.muralarts.org/", confidence:"high", verificationStatus:"unverified", warningFlags:[], estimatedVisitMinutes:20 },
+    { name:"A Love Letter For You", neighborhood:"West Philadelphia", address:"Market St, along the El", latitude:39.9560, longitude:-75.2150,
+      description:"Steve Powers' series of rooftop messages, best seen riding the Market-Frankford El westbound. A moving viewing tour rather than one wall.",
+      sourceName:"Mural Arts Philadelphia", sourceUrl:"https://www.muralarts.org/", confidence:"high", verificationStatus:"unverified", warningFlags:[], estimatedVisitMinutes:45 },
+    { name:"How Philly Moves", neighborhood:"Near the Airport", address:"S 20th St area", latitude:39.8870, longitude:-75.2410,
+      description:"A sweeping dance-themed mural. The best vantage point is worth confirming before building it into a walking loop.",
+      sourceName:"Mural Arts Philadelphia", sourceUrl:"https://www.muralarts.org/", confidence:"medium", verificationStatus:"unverified", warningFlags:["approximate-location"], estimatedVisitMinutes:15 },
+    { name:"Garden of Delight", neighborhood:"Spring Garden", address:"Spring Garden corridor", latitude:39.9700, longitude:-75.1500,
+      description:"Listed across several walking-tour roundups. Exact wall and current condition should be verified against the arts registry.",
+      sourceName:"Visit Philadelphia", sourceUrl:"https://www.visitphilly.com/", confidence:"medium", verificationStatus:"unverified", warningFlags:["single-source"], estimatedVisitMinutes:15 },
+    { name:"Holding Grandmother's Quilt", neighborhood:"Unconfirmed area", address:"location unconfirmed", latitude:39.9800, longitude:-75.1700,
+      description:"Surfaced in a low-quality aggregator with no corroborating source. Flagged so you don't route to a wall that may not exist or may have moved.",
+      sourceName:"Unverified aggregator", sourceUrl:"https://www.muralarts.org/", confidence:"low", verificationStatus:"flagged", warningFlags:["approximate-location","single-source","may-be-removed"], estimatedVisitMinutes:10 },
   ],
   "murals|St. Louis": [
-    { id:"stl-1", name:"Paint Louis Floodwall", neighborhood:"Mississippi Riverfront", lat:38.6090, lng:-90.1840,
-      address:"Wharf St floodwall", themeMatch:"mural mile",
+    { name:"Paint Louis Floodwall", neighborhood:"Mississippi Riverfront", address:"Wharf St floodwall", latitude:38.6090, longitude:-90.1840,
       description:"A long stretch of the Mississippi floodwall repainted each year during the Paint Louis event. Walkable end to end and a strong centerpiece.",
-      source:{name:"Paint Louis", url:"https://www.paintlouis.org/"}, confidence:"medium", verification:"unverified", estimatedMinutes:40, warningFlags:["seasonal"] },
-    { id:"stl-2", name:"The Grove Murals", neighborhood:"The Grove", lat:38.6300, lng:-90.2680,
-      address:"Manchester Ave", themeMatch:"mural cluster",
+      sourceName:"Paint Louis", sourceUrl:"https://www.paintlouis.org/", confidence:"medium", verificationStatus:"unverified", warningFlags:["seasonal"], estimatedVisitMinutes:40 },
+    { name:"The Grove Murals", neighborhood:"The Grove", address:"Manchester Ave", latitude:38.6300, longitude:-90.2680,
       description:"The Grove's commercial strip is dense with murals along Manchester Ave. Best treated as a short cluster walk rather than one stop.",
-      source:{name:"Explore St. Louis", url:"https://explorestlouis.com/"}, confidence:"medium", verification:"unverified", estimatedMinutes:30 },
-    { id:"stl-3", name:"Cherokee Street Murals", neighborhood:"Cherokee Street", lat:38.5910, lng:-90.2230,
-      address:"Cherokee St", themeMatch:"mural cluster",
+      sourceName:"Explore St. Louis", sourceUrl:"https://explorestlouis.com/", confidence:"medium", verificationStatus:"unverified", warningFlags:[], estimatedVisitMinutes:30 },
+    { name:"Cherokee Street Murals", neighborhood:"Cherokee Street", address:"Cherokee St", latitude:38.5910, longitude:-90.2230,
       description:"The Cherokee Street arts district has a rotating set of murals. Confirm which are current before mapping a route.",
-      source:{name:"Explore St. Louis", url:"https://explorestlouis.com/"}, confidence:"medium", verification:"unverified", estimatedMinutes:25 },
-    { id:"stl-4", name:"\"Migrate\" Mural", neighborhood:"uncertain", lat:38.6270, lng:-90.2700,
-      address:"location unconfirmed", themeMatch:"mural (unconfirmed)",
-      description:"Title and rough area only; no reliable source for the exact wall. Flagged so it does not anchor your route until confirmed.",
-      source:{name:"Unverified aggregator", url:"https://explorestlouis.com/"}, confidence:"low", verification:"flagged", estimatedMinutes:10, warningFlags:["approximate-location","single-source"] },
-    { id:"stl-5", name:"Downtown Public Art Wall", neighborhood:"Downtown", lat:38.6280, lng:-90.1920,
-      address:"downtown core", themeMatch:"mural / public art",
+      sourceName:"Explore St. Louis", sourceUrl:"https://explorestlouis.com/", confidence:"medium", verificationStatus:"unverified", warningFlags:[], estimatedVisitMinutes:25 },
+    { name:"\"Migrate\" Mural", neighborhood:"Unconfirmed area", address:"location unconfirmed", latitude:38.6270, longitude:-90.2700,
+      description:"Title and rough area only; no reliable source for the exact wall. Flagged so it doesn't anchor your route until confirmed.",
+      sourceName:"Unverified aggregator", sourceUrl:"https://explorestlouis.com/", confidence:"low", verificationStatus:"flagged", warningFlags:["approximate-location","single-source"], estimatedVisitMinutes:10 },
+    { name:"Downtown Public Art Wall", neighborhood:"Downtown", address:"downtown core", latitude:38.6280, longitude:-90.1920,
       description:"A general downtown public-art listing without a precise location. Low confidence until cross-checked.",
-      source:{name:"City listing", url:"https://explorestlouis.com/"}, confidence:"low", verification:"unverified", estimatedMinutes:15, warningFlags:["single-source"] },
+      sourceName:"City listing", sourceUrl:"https://explorestlouis.com/", confidence:"low", verificationStatus:"unverified", warningFlags:["single-source"], estimatedVisitMinutes:15 },
   ],
 };
 
 const LOADING_MSGS = [
-  "Pulling candidate stops…",
-  "Tagging sources and confidence…",
-  "Nothing here is verified yet — that's your job",
+  "Searching trusted sources…",
+  "Checking museums, city sites, and arts orgs…",
+  "Tagging each stop with a source and confidence…",
+  "Nothing here is verified yet — that part's on you",
 ];
 
-function researchStops({ theme, city }) {
-  // -- SEAM: replace everything inside this Promise with a real call. --
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const key = `${theme}|${city}`;
-      resolve(SAMPLE[key] ? SAMPLE[key].map(s => ({ ...s })) : []);
-    }, 1100);
-  });
+const delay = (ms)=> new Promise(r=>setTimeout(r,ms));
+
+// The seam. Sample for seeded cities; live Worker for everything else.
+async function researchStops({ theme, city }){
+  const key = `${theme}|${city}`;
+  if (SAMPLE[key]) { await delay(900); return SAMPLE[key].map(s=>({...s})); }
+
+  if (WORKER_URL) {
+    try {
+      const res = await fetch(WORKER_URL, {
+        method:"POST", headers:{ "Content-Type":"application/json" },
+        body: JSON.stringify({ theme, city }),
+      });
+      if (!res.ok) throw new Error("Worker "+res.status);
+      const data = await res.json();
+      return Array.isArray(data.stops) ? data.stops : [];
+    } catch(e){ console.error("researchStops failed:", e); return []; }
+  }
+  return []; // no sample + no Worker -> empty/seam state
 }
 
-/* ---------- geo helpers (real math, labeled as estimates) ---------- */
-function haversineKm(a, b){
-  const R=6371, dLat=(b.lat-a.lat)*Math.PI/180, dLng=(b.lng-a.lng)*Math.PI/180;
-  const la1=a.lat*Math.PI/180, la2=b.lat*Math.PI/180;
-  const h=Math.sin(dLat/2)**2 + Math.cos(la1)*Math.cos(la2)*Math.sin(dLng/2)**2;
+/* ---------- geo ---------- */
+function haversineKm(a,b){
+  const R=6371, dLat=(b.latitude-a.latitude)*Math.PI/180, dLng=(b.longitude-a.longitude)*Math.PI/180;
+  const la1=a.latitude*Math.PI/180, la2=b.latitude*Math.PI/180;
+  const h=Math.sin(dLat/2)**2+Math.cos(la1)*Math.cos(la2)*Math.sin(dLng/2)**2;
   return R*2*Math.asin(Math.sqrt(h));
 }
-const MODE_KMH = { walking:4.5, driving:24 };
-function legMinutes(a,b,mode){ return Math.max(1, Math.round(haversineKm(a,b)/MODE_KMH[mode]*60)); }
+const MODE_KMH={ walking:4.5, driving:24 };
+const legMin=(a,b,m)=> Math.max(1, Math.round(haversineKm(a,b)/MODE_KMH[m]*60));
 function nearestNeighbor(stops){
   if(stops.length<3) return stops;
   const left=stops.slice(); const route=[left.shift()];
-  while(left.length){
-    const last=route[route.length-1];
-    let bi=0,bd=Infinity;
-    left.forEach((s,i)=>{const d=haversineKm(last,s); if(d<bd){bd=d;bi=i;}});
-    route.push(left.splice(bi,1)[0]);
-  }
+  while(left.length){ const last=route[route.length-1]; let bi=0,bd=Infinity;
+    left.forEach((s,i)=>{const d=haversineKm(last,s); if(d<bd){bd=d;bi=i;}}); route.push(left.splice(bi,1)[0]); }
   return route;
 }
 
 /* ---------- themes ---------- */
 const I = {
-  mural:<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6"><rect x="3" y="4" width="18" height="14" rx="1"/><path d="M3 13l4-4 4 4 3-3 7 6"/><circle cx="8" cy="8" r="1.3"/><path d="M7 21h10"/></svg>,
-  movie:<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6"><rect x="3" y="6" width="18" height="13" rx="1.5"/><path d="M3 10h18M8 6l-1 4M13 6l-1 4M18 6l-1 4"/></svg>,
-  fountain:<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6"><path d="M12 3v6M9 6c0 2 1.5 3 3 3s3-1 3-3"/><path d="M5 21v-5a7 7 0 0114 0v5"/><path d="M3 21h18"/></svg>,
-  statue:<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6"><circle cx="12" cy="5" r="2"/><path d="M12 7v6M8 10l4-1 4 1M9 21l3-8 3 8"/><path d="M7 21h10"/></svg>,
-  arch:<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6"><path d="M5 21V8l7-5 7 5v13"/><path d="M9 21v-6a3 3 0 016 0v6"/><path d="M3 21h18"/></svg>,
-  food:<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6"><path d="M6 3v7a3 3 0 006 0V3M9 3v18M18 3c-1.5 0-2.5 2-2.5 5s1 4 2.5 4v9"/></svg>,
-  music:<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6"><circle cx="6" cy="18" r="2.5"/><circle cx="17" cy="16" r="2.5"/><path d="M8.5 18V6l11-2v12"/><path d="M8.5 8l11-2"/></svg>,
-  art:<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6"><path d="M12 3a9 9 0 100 18c1 0 1.5-.8 1.5-1.5 0-1.3-1-1.5-1-2.5s.7-1.5 1.5-1.5H17a4 4 0 004-4c0-4.4-4-8-9-8z"/><circle cx="7.5" cy="11" r="1"/><circle cx="12" cy="7.5" r="1"/><circle cx="16" cy="10" r="1"/></svg>,
+  murals:<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7"><rect x="3" y="4" width="18" height="14" rx="1.5"/><path d="M3 13l4-4 4 4 3-3 7 6"/><circle cx="8" cy="8.5" r="1.2"/><path d="M7 21h10"/></svg>,
+  screen:<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 9h18M7 5L6 9M12 5l-1 4M17 5l-1 4"/><path d="M10.5 12.5l3.5 2-3.5 2z"/></svg>,
+  fountains:<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7"><path d="M12 3v6M9 6c0 2 1.4 3 3 3s3-1 3-3"/><path d="M5 21v-5a7 7 0 0114 0v5M3 21h18"/></svg>,
+  monuments:<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7"><circle cx="12" cy="5" r="2"/><path d="M12 7v6M8 10l4-1 4 1M9 21l3-8 3 8M7 21h10"/></svg>,
+  architecture:<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7"><path d="M5 21V8l7-5 7 5v13M9 21v-6a3 3 0 016 0v6M3 21h18"/></svg>,
+  publicart:<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7"><path d="M12 3a9 9 0 100 18c1 0 1.5-.8 1.5-1.6 0-1.2-1-1.4-1-2.4s.7-1.5 1.5-1.5H17a4 4 0 004-4c0-4.4-4-8-9-8z"/><circle cx="7.5" cy="11.5" r="1"/><circle cx="12" cy="7.5" r="1"/><circle cx="16" cy="10.5" r="1"/></svg>,
+  food:<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7"><path d="M6 3v7a3 3 0 006 0V3M9 3v18M18 3c-1.5 0-2.5 2-2.5 5s1 4 2.5 4v9"/></svg>,
+  music:<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7"><circle cx="6" cy="18" r="2.4"/><circle cx="17" cy="16" r="2.4"/><path d="M8.4 18V6l11-2v12M8.4 8l11-2"/></svg>,
+  hidden:<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/></svg>,
 };
 const THEMES = [
-  { id:"murals", label:"Murals", icon:I.mural },
-  { id:"movie", label:"Movie scenes", icon:I.movie },
-  { id:"fountains", label:"Fountains", icon:I.fountain },
-  { id:"statues", label:"Statues", icon:I.statue },
-  { id:"architecture", label:"Architecture", icon:I.arch },
-  { id:"food", label:"Food history", icon:I.food },
-  { id:"music", label:"Music history", icon:I.music },
-  { id:"publicart", label:"Public art", icon:I.art },
+  { id:"murals",       label:"Murals",            desc:"Large-scale street walls and mural districts.", color:"#f2542d", icon:I.murals },
+  { id:"screen",       label:"Movie & TV scenes", desc:"Real filming spots and on-screen landmarks.",   color:"#5b5bd6", icon:I.screen },
+  { id:"fountains",    label:"Fountains",         desc:"Civic, ornamental, and historic waterworks.",    color:"#1390c4", icon:I.fountains },
+  { id:"monuments",    label:"Statues & monuments", desc:"Memorials, statues, and public landmarks.",    color:"#c2841a", icon:I.monuments },
+  { id:"architecture", label:"Architecture",      desc:"Notable buildings, eras, and design walks.",     color:"#557083", icon:I.architecture },
+  { id:"publicart",    label:"Public art",        desc:"Sculpture, installations, and civic art.",       color:"#8d4fd6", icon:I.publicart },
+  { id:"food",         label:"Food history",      desc:"Landmark eateries and culinary origins.",        color:"#d6455f", icon:I.food },
+  { id:"music",        label:"Music history",     desc:"Venues, studios, and sites that made a sound.",  color:"#0c8f7f", icon:I.music },
+  { id:"hidden",       label:"Hidden gems",       desc:"Offbeat, local, easy-to-miss stops.",            color:"#1f9d5a", icon:I.hidden },
 ];
 
+/* ---------- states + cities (50 + DC) ---------- */
 const STATES = {
-  "PA":{ name:"Pennsylvania", cities:["Philadelphia","Pittsburgh"] },
-  "MO":{ name:"Missouri", cities:["St. Louis","Kansas City"] },
-  "IL":{ name:"Illinois", cities:["Chicago","Springfield"] },
-  "NY":{ name:"New York", cities:["New York","Buffalo"] },
-  "CA":{ name:"California", cities:["Los Angeles","San Francisco"] },
+  AL:["Birmingham","Montgomery","Mobile","Huntsville","Tuscaloosa","Selma"],
+  AK:["Anchorage","Juneau","Fairbanks","Sitka","Ketchikan"],
+  AZ:["Phoenix","Tucson","Sedona","Flagstaff","Scottsdale","Tempe"],
+  AR:["Little Rock","Fayetteville","Hot Springs","Bentonville","Eureka Springs"],
+  CA:["Los Angeles","San Francisco","San Diego","Sacramento","Oakland","Santa Barbara","Palm Springs"],
+  CO:["Denver","Boulder","Colorado Springs","Aspen","Fort Collins","Durango"],
+  CT:["Hartford","New Haven","Stamford","Mystic","Bridgeport"],
+  DE:["Wilmington","Dover","Newark","Rehoboth Beach","Lewes"],
+  FL:["Miami","Orlando","Tampa","St. Petersburg","Key West","Jacksonville","St. Augustine"],
+  GA:["Atlanta","Savannah","Athens","Augusta","Macon","Columbus"],
+  HI:["Honolulu","Hilo","Lahaina","Kailua-Kona","Kapaa"],
+  ID:["Boise","Coeur d'Alene","Idaho Falls","Sun Valley","Sandpoint"],
+  IL:["Chicago","Springfield","Peoria","Champaign","Rockford","Galena","Carbondale"],
+  IN:["Indianapolis","Bloomington","Fort Wayne","South Bend","Columbus"],
+  IA:["Des Moines","Iowa City","Cedar Rapids","Dubuque","Davenport"],
+  KS:["Wichita","Kansas City","Topeka","Lawrence","Manhattan"],
+  KY:["Louisville","Lexington","Bowling Green","Paducah","Covington"],
+  LA:["New Orleans","Baton Rouge","Lafayette","Shreveport","Natchitoches"],
+  ME:["Portland","Bar Harbor","Bangor","Augusta","Camden","Kennebunkport"],
+  MD:["Baltimore","Annapolis","Frederick","Ocean City","Cumberland"],
+  MA:["Boston","Cambridge","Salem","Worcester","Provincetown","Lenox"],
+  MI:["Detroit","Ann Arbor","Grand Rapids","Traverse City","Mackinac Island"],
+  MN:["Minneapolis","St. Paul","Duluth","Rochester","Stillwater"],
+  MS:["Jackson","Biloxi","Oxford","Natchez","Vicksburg"],
+  MO:["St. Louis","Kansas City","Springfield","Branson","Columbia","Hannibal"],
+  MT:["Billings","Missoula","Bozeman","Helena","Whitefish"],
+  NE:["Omaha","Lincoln","Grand Island","Kearney"],
+  NV:["Las Vegas","Reno","Carson City","Henderson","Lake Tahoe"],
+  NH:["Manchester","Portsmouth","Concord","Hanover","North Conway"],
+  NJ:["Newark","Jersey City","Atlantic City","Princeton","Cape May","Asbury Park"],
+  NM:["Santa Fe","Albuquerque","Taos","Las Cruces","Roswell"],
+  NY:["New York City","Brooklyn","Buffalo","Rochester","Albany","Ithaca","Saratoga Springs"],
+  NC:["Charlotte","Asheville","Raleigh","Durham","Wilmington","Winston-Salem"],
+  ND:["Fargo","Bismarck","Grand Forks","Medora"],
+  OH:["Columbus","Cleveland","Cincinnati","Dayton","Toledo","Akron"],
+  OK:["Oklahoma City","Tulsa","Norman","Stillwater"],
+  OR:["Portland","Eugene","Bend","Ashland","Astoria","Hood River"],
+  PA:["Philadelphia","Pittsburgh","Lancaster","Gettysburg","Erie","Bethlehem"],
+  RI:["Providence","Newport","Pawtucket","Warwick"],
+  SC:["Charleston","Columbia","Greenville","Myrtle Beach","Beaufort"],
+  SD:["Sioux Falls","Rapid City","Deadwood","Pierre"],
+  TN:["Nashville","Memphis","Knoxville","Chattanooga","Gatlinburg"],
+  TX:["Austin","Houston","San Antonio","Dallas","Fort Worth","El Paso","Marfa"],
+  UT:["Salt Lake City","Park City","Moab","Provo","St. George"],
+  VT:["Burlington","Montpelier","Stowe","Brattleboro","Woodstock"],
+  VA:["Richmond","Virginia Beach","Charlottesville","Alexandria","Williamsburg","Roanoke"],
+  WA:["Seattle","Spokane","Tacoma","Walla Walla","Bellingham","Leavenworth"],
+  WV:["Charleston","Morgantown","Harpers Ferry","Lewisburg"],
+  WI:["Milwaukee","Madison","Green Bay","Door County","Eau Claire"],
+  WY:["Cheyenne","Jackson","Casper","Laramie","Cody"],
+  DC:["Washington"],
 };
-function hasData(theme, city){ return !!SAMPLE[`${theme}|${city}`]; }
-
-/* ---------- small svg bits ---------- */
-const WarnIcon = <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M12 3l9 16H3z"/><path d="M12 10v4M12 17.5v.5"/></svg>;
-const WalkIcon = <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><circle cx="13" cy="4" r="1.6"/><path d="M11 8l3 1 1 4M11 8l-2 5M11 8v5l-3 6M14 13l3 3"/></svg>;
-const CarIcon = <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M5 13l1.5-4.5A2 2 0 018.4 7h7.2a2 2 0 011.9 1.5L19 13M5 13h14v4H5zM7 17v1.5M17 17v1.5"/><circle cx="8" cy="15" r=".6"/><circle cx="16" cy="15" r=".6"/></svg>;
-
-/* ---------- chips ---------- */
-const FlagIcon = <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 21V4M5 4h11l-2 3 2 3H5"/></svg>;
-const FLAG_LABELS = {
-  "approximate-location":"approx. location",
-  "single-source":"single source",
-  "may-be-removed":"may be removed",
-  "seasonal":"seasonal",
-  "private-property":"private property",
-  "access-restricted":"access restricted",
-  "indoor-ticketed":"indoor / ticketed",
-  "invalid-coordinates":"coords unverified",
+const STATE_NAMES = {
+  AL:"Alabama",AK:"Alaska",AZ:"Arizona",AR:"Arkansas",CA:"California",CO:"Colorado",CT:"Connecticut",DE:"Delaware",
+  FL:"Florida",GA:"Georgia",HI:"Hawaii",ID:"Idaho",IL:"Illinois",IN:"Indiana",IA:"Iowa",KS:"Kansas",KY:"Kentucky",
+  LA:"Louisiana",ME:"Maine",MD:"Maryland",MA:"Massachusetts",MI:"Michigan",MN:"Minnesota",MS:"Mississippi",MO:"Missouri",
+  MT:"Montana",NE:"Nebraska",NV:"Nevada",NH:"New Hampshire",NJ:"New Jersey",NM:"New Mexico",NY:"New York",
+  NC:"North Carolina",ND:"North Dakota",OH:"Ohio",OK:"Oklahoma",OR:"Oregon",PA:"Pennsylvania",RI:"Rhode Island",
+  SC:"South Carolina",SD:"South Dakota",TN:"Tennessee",TX:"Texas",UT:"Utah",VT:"Vermont",VA:"Virginia",WA:"Washington",
+  WV:"West Virginia",WI:"Wisconsin",WY:"Wyoming",DC:"Washington, D.C.",
 };
-const flagLabel = (f)=> FLAG_LABELS[f] || String(f).replace(/-/g," ");
-function FlagChips({ flags }){
-  if(!flags || !flags.length) return null;
+const STATE_CODES = Object.keys(STATE_NAMES).sort((a,b)=> STATE_NAMES[a].localeCompare(STATE_NAMES[b]));
+const hasData = (theme,city)=> !!SAMPLE[`${theme}|${city}`];
+
+/* ---------- small icons ---------- */
+const Spark=<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/></svg>;
+const Link=<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M9 15l6-6M10 6l1-1a4 4 0 016 6l-1 1M14 18l-1 1a4 4 0 01-6-6l1-1"/></svg>;
+const Pencil=<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M4 20l1-4L16 5l3 3L8 19z"/></svg>;
+const Shield=<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg>;
+const Pin=<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M12 21s7-6 7-11a7 7 0 10-14 0c0 5 7 11 7 11z"/><circle cx="12" cy="10" r="2.4"/></svg>;
+const Walk=<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9"><circle cx="13" cy="4" r="1.6"/><path d="M11 8l3 1 1 4M11 8l-2 5M11 8v5l-3 6M14 13l3 3"/></svg>;
+const Car=<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9"><path d="M5 13l1.5-4.5A2 2 0 018.4 7h7.2a2 2 0 011.9 1.5L19 13M5 13h14v4H5zM7 17v1.5M17 17v1.5"/></svg>;
+const FlagIcon=<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 21V4M5 4h11l-2 3 2 3H5"/></svg>;
+const Info=<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 7.5v.5"/></svg>;
+
+const FLAG_LABELS={ "approximate-location":"approx. location","single-source":"single source","may-be-removed":"may be removed",
+  "seasonal":"seasonal","private-property":"private property","access-restricted":"access restricted",
+  "indoor-ticketed":"indoor / ticketed","invalid-coordinates":"coords unverified" };
+const flagLabel=(f)=> FLAG_LABELS[f]||String(f).replace(/-/g," ");
+
+const TRUST=[ {t:"AI-assisted",i:Spark},{t:"Source linked",i:Link},{t:"Editable route",i:Pencil},{t:"Verify before visiting",i:Shield} ];
+
+/* ---------- shared bits ---------- */
+function FlagChips({flags}){
+  if(!flags||!flags.length) return null;
+  return <div className="flags">{flags.map((f,i)=><span className="flagchip" key={i}>{FlagIcon}{flagLabel(f)}</span>)}</div>;
+}
+function ConfChip({level}){ return <span className={`chip conf-${level}`}><span className="cd"/>{level} confidence</span>; }
+function VerChip({status}){
+  const t = status==="verified" ? "✓ verified by you" : status==="flagged" ? "⚠ flagged" : "unverified";
+  return <span className={`chip ver ${status==="verified"?"ver-verified":status==="flagged"?"ver-flagged":""}`}>{t}</span>;
+}
+
+/* ---------- map panel (schematic from real coords) ---------- */
+function MapPanel({ stops }){
+  const W=820,H=360,PAD=58;
+  const pts = useMemo(()=>{
+    if(!stops.length) return [];
+    if(stops.length===1) return [{x:W/2,y:H/2}];
+    const lats=stops.map(s=>s.latitude), lngs=stops.map(s=>s.longitude);
+    const minLa=Math.min(...lats),maxLa=Math.max(...lats),minLo=Math.min(...lngs),maxLo=Math.max(...lngs);
+    const dLa=(maxLa-minLa)||0.0001, dLo=(maxLo-minLo)||0.0001;
+    return stops.map(s=>({
+      x: PAD + ((s.longitude-minLo)/dLo)*(W-2*PAD),
+      y: PAD + ((maxLa-s.latitude)/dLa)*(H-2*PAD),
+    }));
+  },[stops]);
+  const poly = pts.map(p=>`${p.x},${p.y}`).join(" ");
   return (
-    <div className="flags">
-      {flags.map((f,i)=>(
-        <span className="flagchip" key={i}>{FlagIcon}{flagLabel(f)}</span>
-      ))}
+    <div className="mappanel">
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Schematic route preview">
+        <rect x="0" y="0" width={W} height={H} fill="#f4efe4"/>
+        <g stroke="#e6dcc6" strokeWidth="1">
+          {[1,2,3,4,5].map(i=><line key={"h"+i} x1="0" y1={H/6*i} x2={W} y2={H/6*i}/>)}
+          {[1,2,3,4,5,6,7,8,9,10,11].map(i=><line key={"v"+i} x1={W/12*i} y1="0" x2={W/12*i} y2={H}/>)}
+        </g>
+        <path d="M -20 120 Q 250 80 420 200 T 880 240" fill="none" stroke="#e9e0cd" strokeWidth="10"/>
+        <path d="M 120 -20 Q 180 180 380 260 T 520 420" fill="none" stroke="#e9e0cd" strokeWidth="8"/>
+        {pts.length>1 && <polyline points={poly} fill="none" stroke="#f2542d" strokeWidth="3.5" strokeLinejoin="round" strokeLinecap="round" strokeDasharray="2 9" opacity="0.9"/>}
+        {pts.length>1 && <polyline points={poly} fill="none" stroke="#f2542d" strokeWidth="3.5" strokeLinejoin="round" strokeLinecap="round" opacity="0.28"/>}
+        {pts.map((p,i)=>(
+          <g key={i}>
+            <circle cx={p.x} cy={p.y} r="17" fill="#fff" stroke="#f2542d" strokeWidth="2.5"/>
+            <circle cx={p.x} cy={p.y} r="11" fill="#f2542d"/>
+            <text x={p.x} y={p.y+4.5} textAnchor="middle" fontFamily="Plus Jakarta Sans,sans-serif" fontSize="13" fontWeight="700" fill="#fff">{i+1}</text>
+          </g>
+        ))}
+        {!pts.length && <text x={W/2} y={H/2} textAnchor="middle" fontFamily="Plus Jakarta Sans" fontSize="16" fill="#9b9384">Add stops to preview your route</text>}
+      </svg>
+      <div className="mapcap">{Info} Schematic preview — shows stop order by position, not real driving directions.</div>
     </div>
   );
 }
-function ConfChip({ level }){
-  return <span className={`chip conf-${level}`}><span className="cd"/>{level} confidence</span>;
-}
-function VerChip({ status }){
-  const t = status==="verified" ? "✓ verified by you" : status==="flagged" ? "⚠ flagged" : "unverified";
-  return <span className={`chip ver-${status}`}>{t}</span>;
-}
 
 /* ---------- stop card ---------- */
-function StopCard({ stop, included, onToggle, onRemove, onVerify }){
+function StopCard({ stop, on, onToggle, onRemove, onVerify }){
   return (
-    <div className={`card${included?" included":""}`}>
-      <div className="card-head">
+    <div className={`scard${on?" on":""}`}>
+      <div className="scard-top">
         <div>
           <h3>{stop.name}</h3>
-          <div className="where">{stop.neighborhood} · {stop.address}</div>
+          <div className="loc">{Pin}{stop.neighborhood}{stop.address?` · ${stop.address}`:""}</div>
         </div>
-        <button className={`iconbtn add${included?" added":""}`} onClick={onToggle}
-          aria-pressed={included}>
-          {included ? "✓ in route" : "+ add to route"}
+        <button className={`addbtn${on?" on":""}`} onClick={onToggle} aria-pressed={on}>
+          {on ? "✓ Added" : "+ Add to route"}
         </button>
       </div>
       <p className="desc">{stop.description}</p>
       <div className="metarow">
         <ConfChip level={stop.confidence}/>
-        <VerChip status={stop.verification}/>
-        <span className="chip">src: <a className="srclink" href={stop.source.url} target="_blank" rel="noopener noreferrer">{stop.source.name}</a></span>
+        <VerChip status={stop.verificationStatus}/>
+        <span className="chip src">Source: <a href={stop.sourceUrl} target="_blank" rel="noopener noreferrer">{stop.sourceName}</a></span>
       </div>
       <FlagChips flags={stop.warningFlags}/>
-      <div className="card-actions">
-        {stop.verification!=="verified" &&
-          <button className="iconbtn ver" onClick={onVerify}>mark verified</button>}
-        <button className="iconbtn" onClick={onRemove}>remove from list</button>
+      <div className="scard-actions">
+        {stop.verificationStatus!=="verified" && <button className="linkbtn ok" onClick={onVerify}>Mark verified</button>}
+        <button className="linkbtn" onClick={onRemove}>Remove from list</button>
       </div>
     </div>
   );
 }
 
-/* ============================================================ */
+/* ============================================================================ */
 function App(){
-  const [step, setStep] = useState("theme");      // theme | place | stops | route
-  const [theme, setTheme] = useState(null);
-  const [stateCode, setStateCode] = useState("");
-  const [city, setCity] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [stops, setStops] = useState([]);
-  const [included, setIncluded] = useState([]);   // ordered list of ids
-  const [mode, setMode] = useState("walking");
-  const [toast, setToast] = useState(null);
-  const [lmsg, setLmsg] = useState(LOADING_MSGS[0]);
+  const [step,setStep]=useState("home");      // home | stops | route
+  const [theme,setTheme]=useState("");
+  const [stateCode,setStateCode]=useState("");
+  const [city,setCity]=useState("");
+  const [loading,setLoading]=useState(false);
+  const [stops,setStops]=useState([]);
+  const [included,setIncluded]=useState([]);
+  const [mode,setMode]=useState("walking");
+  const [toast,setToast]=useState(null);
+  const [lmsg,setLmsg]=useState(LOADING_MSGS[0]);
+  const [liveMode,setLiveMode]=useState(false);
 
-  const themeLabel = theme ? THEMES.find(t=>t.id===theme).label : "";
+  const themeObj = THEMES.find(t=>t.id===theme);
+  const themeLabel = themeObj ? themeObj.label : "";
+  const ready = theme && city;
+  const isSample = ready && hasData(theme,city);
 
-  const flashToast = (m)=>{ setToast(m); setTimeout(()=>setToast(null), 2200); };
+  const flash=(m)=>{ setToast(m); setTimeout(()=>setToast(null),2200); };
 
-  const goResearch = useCallback(async ()=>{
+  const run = useCallback(async ()=>{
+    if(!ready) return;
+    setLiveMode(!hasData(theme,city));
     setStep("stops"); setLoading(true); setStops([]); setIncluded([]);
-    let i=0; const iv=setInterval(()=>{ i=(i+1)%LOADING_MSGS.length; setLmsg(LOADING_MSGS[i]); }, 420);
-    const res = await researchStops({ theme, city });
-    clearInterval(iv);
-    setStops(res); setLoading(false);
-  }, [theme, city]);
+    window.scrollTo({top:0,behavior:"smooth"});
+    let i=0; const iv=setInterval(()=>{ i=(i+1)%LOADING_MSGS.length; setLmsg(LOADING_MSGS[i]); },520);
+    const res=await researchStops({theme,city});
+    clearInterval(iv); setStops(res); setLoading(false);
+  },[ready,theme,city]);
 
-  const toggleInclude = (id)=> setIncluded(prev=>
-    prev.includes(id) ? prev.filter(x=>x!==id) : [...prev, id]);
-  const removeStop = (id)=>{ setStops(prev=>prev.filter(s=>s.id!==id)); setIncluded(prev=>prev.filter(x=>x!==id)); };
-  const verifyStop = (id)=> setStops(prev=>prev.map(s=> s.id===id?{...s, verification:"verified"}:s));
+  const toggle=(name)=> setIncluded(p=> p.includes(name)?p.filter(x=>x!==name):[...p,name]);
+  const removeStop=(name)=>{ setStops(p=>p.filter(s=>s.name!==name)); setIncluded(p=>p.filter(x=>x!==name)); };
+  const verify=(name)=> setStops(p=>p.map(s=> s.name===name?{...s,verificationStatus:"verified"}:s));
+  const includedStops=useMemo(()=> included.map(n=>stops.find(s=>s.name===n)).filter(Boolean),[included,stops]);
+  const move=(idx,d)=> setIncluded(p=>{ const j=idx+d; if(j<0||j>=p.length) return p; const a=p.slice(); [a[idx],a[j]]=[a[j],a[idx]]; return a; });
+  const optimize=()=>{ setIncluded(nearestNeighbor(includedStops).map(s=>s.name)); flash("Order optimized · nearest stop next"); };
 
-  const includedStops = useMemo(()=> included.map(id=>stops.find(s=>s.id===id)).filter(Boolean), [included, stops]);
+  const totals=useMemo(()=>{ let dwell=0,travel=0;
+    includedStops.forEach((s,i)=>{ dwell+=s.estimatedVisitMinutes; if(i>0) travel+=legMin(includedStops[i-1],s,mode); });
+    return {dwell,travel,total:dwell+travel}; },[includedStops,mode]);
+  const fmt=(m)=> m>=60 ? `${Math.floor(m/60)}h ${m%60}m` : `${m}m`;
 
-  const move = (idx, dir)=> setIncluded(prev=>{
-    const next=[idx, idx+dir];
-    if(next[1]<0||next[1]>=prev.length) return prev;
-    const arr=prev.slice(); [arr[next[0]], arr[next[1]]]=[arr[next[1]], arr[next[0]]]; return arr;
-  });
-  const optimize = ()=>{
-    const ordered = nearestNeighbor(includedStops);
-    setIncluded(ordered.map(s=>s.id)); flashToast("Order optimized · nearest-stop-next");
-  };
+  const goHome=()=> setStep("home");
 
-  const totals = useMemo(()=>{
-    let dwell=0, travel=0;
-    includedStops.forEach((s,i)=>{ dwell+=s.estimatedMinutes;
-      if(i>0) travel+=legMinutes(includedStops[i-1], s, mode); });
-    return { dwell, travel, total:dwell+travel };
-  }, [includedStops, mode]);
-  const fmt = (m)=> m>=60 ? `${Math.floor(m/60)}h ${m%60}m` : `${m}m`;
+  /* -------- HOME -------- */
+  const Home = (
+    <div>
+      <section className="hero">
+        <svg className="map-tex" viewBox="0 0 1200 500" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+          <g stroke="#dfe9e6" strokeWidth="2" fill="none">
+            <path d="M-50 120 Q 300 60 600 160 T 1250 180"/>
+            <path d="M-50 300 Q 350 220 700 320 T 1250 300"/>
+            <path d="M200 -50 Q 260 200 520 300 T 700 560"/>
+          </g>
+          <g fill="#ecd9cf">
+            <circle cx="600" cy="160" r="6"/><circle cx="700" cy="320" r="6"/><circle cx="520" cy="300" r="6"/><circle cx="1010" cy="190" r="6"/>
+          </g>
+        </svg>
+        <div className="wrap">
+          <div className="hero-inner">
+            <span className="eyebrow"><span className="pulse"/>AI-assisted · you stay in control</span>
+            <h1 className="hero-h">Walk the <em>story</em> of any U.S. city</h1>
+            <p className="hero-sub">Pick a theme and a city. We research real candidate stops, link every source, and map an editable route — you verify before you go.</p>
 
-  /* ---------- stepper ---------- */
-  const steps=[["theme","Theme"],["place","Place"],["stops","Stops"],["route","Route"]];
-  const idx = steps.findIndex(s=>s[0]===step);
-  const Stepper = (
-    <div className="stepper">
-      {steps.map(([k,lbl],i)=>(
-        <React.Fragment key={k}>
-          {i>0 && <span className={`seg${i<=idx?" done":""}`}/>}
-          <div className={`step ${i===idx?"active":i<idx?"done":""} ${i<idx?"clickable":""}`}
-               onClick={()=> i<idx && setStep(k)}>
-            <span className="dot">{i<idx?"✓":i+1}</span><span className="label">{lbl}</span>
-          </div>
-        </React.Fragment>
-      ))}
-    </div>
-  );
+            <div className="search-card">
+              <div className="search-grid">
+                <div className="sfield" onClick={e=>e.currentTarget.querySelector('select').focus()}>
+                  <label>Theme</label>
+                  <select value={theme} onChange={e=>setTheme(e.target.value)}>
+                    <option value="">Choose a theme</option>
+                    {THEMES.map(t=><option key={t.id} value={t.id}>{t.label}</option>)}
+                  </select>
+                </div>
+                <div className="sfield" onClick={e=>e.currentTarget.querySelector('select').focus()}>
+                  <label>State</label>
+                  <select value={stateCode} onChange={e=>{setStateCode(e.target.value); setCity("");}}>
+                    <option value="">Select state</option>
+                    {STATE_CODES.map(c=><option key={c} value={c}>{STATE_NAMES[c]}</option>)}
+                  </select>
+                </div>
+                <div className="sfield" onClick={e=>e.currentTarget.querySelector('select').focus()}>
+                  <label>City</label>
+                  <select value={city} disabled={!stateCode} onChange={e=>setCity(e.target.value)}>
+                    <option value="">{stateCode?"Select city":"Pick a state first"}</option>
+                    {stateCode && STATES[stateCode].map(c=><option key={c} value={c}>{c}</option>)}
+                  </select>
+                </div>
+                <div className="search-cta">
+                  <button className="btn btn-primary btn-lg btn-block" disabled={!ready} onClick={run}>
+                    {Spark}{isSample ? "Find stops" : "Research live stops"}
+                  </button>
+                </div>
+              </div>
+              <div className="search-hint">
+                {!ready && <><span className="hi none"/>Pick a theme and a city to start.</>}
+                {ready && isSample && <><span className="hi sample"/>Sample tour ready for {city} — instant preview.</>}
+                {ready && !isSample && <><span className="hi live"/>AI will research and verify candidate stops for {themeLabel.toLowerCase()} in {city}.</>}
+              </div>
+            </div>
 
-  return (
-    <div className="wrap">
-      <header className="top">
-        <div className="brand">
-          <svg className="nodeicon" viewBox="0 0 24 24" fill="none" stroke="var(--coral)" strokeWidth="1.8">
-            <circle cx="5" cy="19" r="2.4"/><circle cx="19" cy="5" r="2.4"/>
-            <path d="M5 16.5C5 11 12 13 12 8s7-3 7-1.5" strokeDasharray="2.5 2.5"/>
-          </svg>
-          <div>
-            <h1>Throughline</h1>
-            <div className="tag">themed city tours · vetted by you</div>
+            <div className="badges">
+              {TRUST.map((b,i)=><span className="badge" key={i}>{b.i}{b.t}</span>)}
+            </div>
           </div>
         </div>
-        {Stepper}
-      </header>
+      </section>
 
-      {/* ---------------- THEME ---------------- */}
-      {step==="theme" && (
-        <div>
-          <h2 className="screen-title">What kind of tour?</h2>
-          <p className="screen-sub">Pick a theme. We'll research real-world candidate stops you can vet, reorder, and route. Right now murals is the seeded example.</p>
+      <section className="block">
+        <div className="wrap">
+          <div className="sec-head">
+            <div className="kick">Browse by theme</div>
+            <h2>Nine ways to read a city</h2>
+            <p>Every theme works in every city. Murals in Philadelphia and St. Louis ship with sample data; the rest research live.</p>
+          </div>
           <div className="theme-grid">
             {THEMES.map(t=>(
-              <button key={t.id} className={`theme-tile${theme===t.id?" sel":""}`} onClick={()=>setTheme(t.id)}>
-                {hasData(t.id,"Philadelphia") && <span className="seeded">sample</span>}
-                {t.icon}
-                <span className="tname">{t.label}</span>
+              <button key={t.id} className={`tcard${theme===t.id?" sel":""}`} onClick={()=>{ setTheme(t.id); window.scrollTo({top:0,behavior:"smooth"}); }}>
+                {t.id==="murals" && <span className="tag-sample">Sample ready</span>}
+                <span className="ticon" style={{background:t.color+"18",color:t.color}}>{t.icon}</span>
+                <span><h3>{t.label}</h3><p>{t.desc}</p></span>
               </button>
             ))}
           </div>
-          <div className="actbar">
-            <button className="btn btn-primary" disabled={!theme} onClick={()=>setStep("place")}>
-              Choose a place →
-            </button>
-            {theme && <span style={{fontFamily:"var(--mono)",fontSize:13,color:"var(--faint)"}}>{themeLabel} selected</span>}
+        </div>
+      </section>
+
+      <section className="block" style={{paddingTop:0}}>
+        <div className="wrap">
+          <div className="sec-head">
+            <div className="kick">How it works</div>
+            <h2>Suggested, sourced, and yours to edit</h2>
+          </div>
+          <div className="steps">
+            <div className="stepc"><div className="num">1</div><h4>Pick a theme + city</h4><p>Choose what you want to see and where. Fifty states plus D.C., with the cities worth walking.</p></div>
+            <div className="stepc"><div className="num">2</div><h4>We research real stops</h4><p>An AI assistant searches trusted sources — tourism boards, museums, arts orgs — and tags each stop with a source and a confidence level.</p></div>
+            <div className="stepc"><div className="num">3</div><h4>Vet, route, and go</h4><p>Remove what doesn't fit, reorder or auto-optimize, pick walking or driving, and verify each stop before you head out.</p></div>
           </div>
         </div>
-      )}
+      </section>
 
-      {/* ---------------- PLACE ---------------- */}
-      {step==="place" && (
-        <div>
-          <button className="backlink" onClick={()=>setStep("theme")}>← change theme</button>
-          <h2 className="screen-title">Where are we walking?</h2>
-          <p className="screen-sub">Theme: <b style={{color:"var(--coral)"}}>{themeLabel}</b>. Choose a state and city. Seeded data exists for Philadelphia and St. Louis murals; everything else shows you the empty-state seam.</p>
-          <div style={{maxWidth:420}}>
-            <div className="field">
-              <label>State</label>
-              <select value={stateCode} onChange={e=>{setStateCode(e.target.value); setCity("");}}>
-                <option value="">Select a state…</option>
-                {Object.entries(STATES).map(([code,s])=>
-                  <option key={code} value={code}>{s.name}</option>)}
-              </select>
-            </div>
-            <div className="field">
-              <label>City</label>
-              <select value={city} disabled={!stateCode} onChange={e=>setCity(e.target.value)}>
-                <option value="">Select a city…</option>
-                {stateCode && STATES[stateCode].cities.map(c=>
-                  <option key={c} value={c}>{c}</option>)}
-              </select>
-              {city && (
-                hasData(theme,city)
-                  ? <div className="availability has">● seeded sample data available</div>
-                  : <div className="availability none">○ no sample yet · live research goes here</div>
-              )}
-            </div>
-          </div>
-          <div className="actbar">
-            <button className="btn btn-primary" disabled={!city} onClick={goResearch}>
-              Research stops →
-            </button>
+      <footer><div className="wrap"><div className="row">
+        <span>Throughline · self-guided culture tours</span>
+        <span>AI-assisted · always verify before visiting</span>
+      </div></div></footer>
+    </div>
+  );
+
+  /* -------- STOPS -------- */
+  const Stops = (
+    <div className="screen-wrap"><div className="narrow">
+      <button className="backlink" onClick={goHome}>← New search</button>
+      <h1 className="screen-title">{themeLabel} in {city}</h1>
+      <p className="screen-meta">{STATE_NAMES[stateCode]} {isSample ? <>· <b>sample data</b></> : <>· <b>live research</b></>}</p>
+
+      {loading ? (
+        <div className="loading"><div className="spinner"/><div className="lmsg">{lmsg}</div></div>
+      ) : stops.length===0 ? (
+        <div className="empty">
+          <div className="eic">{Spark}</div>
+          {liveMode && !WORKER_URL ? (<>
+            <h3>Live research isn't connected yet</h3>
+            <p>This city researches live. Deploy the Cloudflare Worker and paste its URL into <b>WORKER_URL</b>, and the assistant will search trusted sources and generate verified candidate stops for {themeLabel.toLowerCase()} in {city}.</p>
+            <div className="seam">researchStops() → Worker → web-search + Claude</div>
+          </>) : (<>
+            <h3>No verifiable stops came back</h3>
+            <p>Nothing met the bar for {themeLabel.toLowerCase()} in {city} — real location plus a credible source. Try another city or a different theme.</p>
+          </>)}
+          <div style={{marginTop:18}}><button className="btn btn-ghost btn-md" onClick={goHome}>Back to search</button></div>
+        </div>
+      ) : (<>
+        <div className="infostrip">
+          <div className="ic">{Shield}</div>
+          <div>
+            <div className="it">AI-suggested, not guaranteed</div>
+            <div className="id">Every stop was proposed by research, not confirmed. Open the source and check it before you go. Mark stops verified as you confirm them.</div>
+            <div className="ministrip">{TRUST.map((b,i)=><span className="minibadge" key={i}>{b.i}{b.t}</span>)}</div>
           </div>
         </div>
-      )}
-
-      {/* ---------------- STOPS ---------------- */}
-      {step==="stops" && (
-        <div>
-          <button className="backlink" onClick={()=>setStep("place")}>← change place</button>
-          <h2 className="screen-title">{themeLabel} in {city}</h2>
-
-          {loading ? (
-            <div className="loading">
-              <div className="spinner"/>
-              <div className="lmsg">{lmsg}</div>
-            </div>
-          ) : stops.length===0 ? (
-            <div className="empty">
-              {WarnIcon}
-              <h3>No sample stops for this combination yet</h3>
-              <p>v1 only seeds Philadelphia and St. Louis murals. This empty state is exactly where the live source plugs in.</p>
-              <div className="seam">researchStops() → search API · Claude API · scraper</div>
-              <div className="actbar" style={{justifyContent:"center"}}>
-                <button className="btn btn-ghost" onClick={()=>setStep("place")}>Pick another place</button>
-              </div>
-            </div>
-          ) : (
-            <div>
-              <div className="verify-banner">
-                {WarnIcon}
-                <div>
-                  <div className="vb-t">AI-suggested, not guaranteed</div>
-                  <div className="vb-d">Every stop below was proposed by research logic, not confirmed. Open the source and check it exists before you go. Mark stops verified as you confirm them.</div>
-                </div>
-              </div>
-              <div className="listmeta">
-                <span className="cnt"><b>{included.length}</b> in route · {stops.length} candidates</span>
-                <button className="btn btn-ghost btn-tiny" onClick={goResearch}>↻ re-research</button>
-              </div>
-              <div className="cards">
-                {stops.map(s=>(
-                  <StopCard key={s.id} stop={s} included={included.includes(s.id)}
-                    onToggle={()=>toggleInclude(s.id)} onRemove={()=>removeStop(s.id)} onVerify={()=>verifyStop(s.id)} />
-                ))}
-              </div>
-              <div className="actbar">
-                <button className="btn btn-primary" disabled={included.length<2}
-                  onClick={()=>setStep("route")}>
-                  Build route from {included.length} {included.length===1?"stop":"stops"} →
-                </button>
-                {included.length<2 && <span style={{fontFamily:"var(--mono)",fontSize:12.5,color:"var(--faint)"}}>add at least 2 stops</span>}
-              </div>
-            </div>
-          )}
+        <div className="list-head">
+          <span className="cnt"><b>{included.length}</b> in route · {stops.length} candidates</span>
+          <button className="btn btn-ghost btn-sm" onClick={run}>↻ Re-research</button>
         </div>
-      )}
+        <div className="cards">
+          {stops.map(s=>(
+            <StopCard key={s.name} stop={s} on={included.includes(s.name)}
+              onToggle={()=>toggle(s.name)} onRemove={()=>removeStop(s.name)} onVerify={()=>verify(s.name)} />
+          ))}
+        </div>
+        <div className="floatbar"><div className="floatbar-inner">
+          <span className="fb-l"><b>{included.length}</b> {included.length===1?"stop":"stops"} selected{included.length<2?" · add at least 2":""}</span>
+          <button className="btn btn-primary btn-md" disabled={included.length<2} onClick={()=>{ setStep("route"); window.scrollTo({top:0,behavior:"smooth"}); }}>
+            Build route →
+          </button>
+        </div></div>
+      </>)}
+    </div></div>
+  );
 
-      {/* ---------------- ROUTE ---------------- */}
-      {step==="route" && (
+  /* -------- ROUTE -------- */
+  const Route = (
+    <div className="screen-wrap"><div className="narrow">
+      <button className="backlink" onClick={()=>setStep("stops")}>← Back to stops</button>
+      <h1 className="screen-title">Your {city} route</h1>
+      <p className="screen-meta">{includedStops.length} stops · {themeLabel} · reorder by hand or auto-optimize.</p>
+
+      <MapPanel stops={includedStops}/>
+
+      <div className="toolbar">
+        <div className="modebar" role="group" aria-label="travel mode">
+          <button className={mode==="walking"?"on":""} onClick={()=>setMode("walking")}>{Walk} Walking</button>
+          <button className={mode==="driving"?"on":""} onClick={()=>setMode("driving")}>{Car} Driving</button>
+        </div>
+        <button className="btn btn-ghost btn-sm" onClick={optimize}>⇄ Optimize order</button>
+      </div>
+
+      {includedStops.length===0 ? (
+        <div className="empty"><h3>No stops in your route</h3><p>Head back and add a few candidates.</p></div>
+      ) : (
         <div>
-          <button className="backlink" onClick={()=>setStep("stops")}>← back to stops</button>
-          <h2 className="screen-title">Your {city} route</h2>
-          <p className="screen-sub">Reorder by hand, or optimize for the shortest hop between stops. Times are rough estimates from straight-line distance, not real routing.</p>
-
-          <div className="verify-banner">
-            {WarnIcon}
-            <div>
-              <div className="vb-t">Verify before visiting</div>
-              <div className="vb-d">Confirm each stop still exists and is accessible. Flagged and low-confidence stops especially.</div>
-            </div>
-          </div>
-
-          <div className="modebar" role="group" aria-label="travel mode">
-            <button className={mode==="walking"?"on":""} onClick={()=>setMode("walking")}>{WalkIcon} Walking</button>
-            <button className={mode==="driving"?"on":""} onClick={()=>setMode("driving")}>{CarIcon} Driving</button>
-          </div>
-          <div style={{margin:"0 0 18px"}}>
-            <button className="btn btn-ghost btn-tiny" onClick={optimize}>⇄ optimize order</button>
-          </div>
-
-          <div className="route">
-            {includedStops.map((s,i)=>(
-              <React.Fragment key={s.id}>
-                {i>0 && (
-                  <div className="leg">
-                    {mode==="walking"?WalkIcon:CarIcon}
-                    ~{legMinutes(includedStops[i-1], s, mode)} min {mode} · est.
-                  </div>
-                )}
-                <div className="rstop">
-                  <div className="rnode">{i+1}</div>
+          {includedStops.map((s,i)=>(
+            <React.Fragment key={s.name}>
+              {i>0 && <div className="rleg"><span className="dots"/>{mode==="walking"?Walk:Car} ~{legMin(includedStops[i-1],s,mode)} min {mode} · estimate</div>}
+              <div className="rcard">
+                <div className="rnode">{i+1}</div>
+                <div className="rbody">
                   <h4>{s.name}</h4>
-                  <div className="rmeta">
-                    <span>{s.neighborhood}</span>
-                    <span>· ~{s.estimatedMinutes} min here</span>
-                    <span>· {s.confidence} conf</span>
-                    {s.verification==="flagged" && <span style={{color:"var(--med)"}}>· ⚠ flagged</span>}
-                    {s.verification==="verified" && <span style={{color:"var(--high)"}}>· ✓ verified</span>}
+                  <div className="rsub">
+                    <span>{s.neighborhood}</span><span>· ~{s.estimatedVisitMinutes} min here</span>
+                    <ConfChip level={s.confidence}/>
+                    {s.verificationStatus==="flagged" && <span style={{color:"var(--med)",fontWeight:700}}>⚠ flagged</span>}
+                    {s.verificationStatus==="verified" && <span style={{color:"var(--high)",fontWeight:700}}>✓ verified</span>}
                   </div>
                   <FlagChips flags={s.warningFlags}/>
-                  <div className="rctl">
-                    <button onClick={()=>move(i,-1)} disabled={i===0} aria-label="move up">↑</button>
-                    <button onClick={()=>move(i,1)} disabled={i===includedStops.length-1} aria-label="move down">↓</button>
-                    <button className="del" onClick={()=>toggleInclude(s.id)} aria-label="remove from route">✕</button>
-                  </div>
                 </div>
-              </React.Fragment>
-            ))}
-          </div>
-
-          {includedStops.length===0 && (
-            <div className="empty"><h3>No stops in your route</h3><p>Head back and add a few candidates.</p></div>
-          )}
-
-          {includedStops.length>0 && (
-            <div className="total-card">
-              <div>
-                <div className="tl">Estimated total</div>
-                <div className="tv">{fmt(totals.total)}</div>
-                <div className="tnote">{includedStops.length} stops · ~{fmt(totals.dwell)} at stops + ~{fmt(totals.travel)} {mode} · placeholder estimate</div>
+                <div className="rctl">
+                  <button onClick={()=>move(i,-1)} disabled={i===0} aria-label="move up">↑</button>
+                  <button onClick={()=>move(i,1)} disabled={i===includedStops.length-1} aria-label="move down">↓</button>
+                  <button className="del" onClick={()=>toggle(s.name)} aria-label="remove">✕</button>
+                </div>
               </div>
-              <div style={{display:"flex",gap:10,flexWrap:"wrap"}}>
-                <button className="btn btn-ghost btn-tiny" onClick={()=>flashToast("Save coming soon · would store this route")}>Save route</button>
-                <button className="btn btn-primary btn-tiny" onClick={()=>flashToast("Share coming soon · would create a link")}>Share route</button>
-              </div>
+            </React.Fragment>
+          ))}
+
+          <div className="itin">
+            <div>
+              <div className="il">Estimated total</div>
+              <div className="iv">{fmt(totals.total)}</div>
+              <div className="inote">{includedStops.length} stops · ~{fmt(totals.dwell)} at stops + ~{fmt(totals.travel)} {mode} · placeholder estimate</div>
             </div>
-          )}
+            <div className="iact">
+              <button className="btn btn-onbrand-ghost btn-md" onClick={()=>flash("Save coming soon · would store this route")}>Save route</button>
+              <button className="btn btn-onbrand btn-md" onClick={()=>flash("Share coming soon · would create a link")}>Share route</button>
+            </div>
+          </div>
         </div>
       )}
+    </div></div>
+  );
+
+  return (
+    <div>
+      <nav className="bar"><div className="wrap"><div className="row">
+        <div className="logo" onClick={goHome}>
+          <svg viewBox="0 0 24 24" fill="none" stroke="#f2542d" strokeWidth="1.9"><circle cx="5" cy="19" r="2.4"/><circle cx="19" cy="5" r="2.4"/><path d="M5 16.5C5 11 12 13 12 8s7-3 7-1.5" strokeDasharray="2.5 2.5"/></svg>
+          <b>Throughline</b><span className="beta">Beta</span>
+        </div>
+        <div className="navlinks"><a onClick={goHome}>Home</a><a onClick={goHome}>Themes</a><a onClick={goHome}>How it works</a></div>
+      </div></div></nav>
+
+      {step==="home" && Home}
+      {step==="stops" && Stops}
+      {step==="route" && Route}
 
       {toast && <div className="toast">{toast}</div>}
     </div>
