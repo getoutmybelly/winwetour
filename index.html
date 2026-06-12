@@ -104,6 +104,21 @@
   .sec-head h2{font-family:var(--display);font-weight:600;font-size:clamp(26px,3.6vw,38px);letter-spacing:-.025em;margin:0 0 8px;line-height:1.08}
   .sec-head p{color:var(--muted);font-size:16px;margin:0;line-height:1.55}
 
+
+  /* featured routes */
+  .featured-routes{margin-top:28px;display:grid;grid-template-columns:repeat(4,1fr);gap:12px;text-align:left}
+  @media(max-width:900px){.featured-routes{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:520px){.featured-routes{grid-template-columns:1fr}}
+  .froute{background:#fff;border:1px solid var(--line);border-radius:16px;padding:15px;box-shadow:var(--shadow-sm);cursor:pointer;transition:.18s;min-height:112px}
+  .froute:hover{transform:translateY(-3px);box-shadow:var(--shadow-md);border-color:var(--brand)}
+  .froute .ftop{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}
+  .froute .ftype{font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;font-weight:800;color:var(--accent);background:var(--accent-50);border-radius:20px;padding:4px 8px}
+  .froute .fcount{font-size:11px;font-weight:700;color:var(--brand);background:var(--brand-50);border-radius:20px;padding:4px 8px}
+  .froute h3{font-family:var(--display);font-weight:600;font-size:17px;line-height:1.12;letter-spacing:-.01em;margin:0 0 5px}
+  .froute p{font-size:12.5px;color:var(--muted);margin:0;line-height:1.35}
+  .featured-note{margin-top:13px;font-size:12.5px;color:var(--muted);text-align:center}
+
+
   /* theme grid */
   .theme-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
   @media(max-width:820px){.theme-grid{grid-template-columns:repeat(2,1fr)}}
@@ -258,47 +273,1696 @@ const { useState, useMemo, useCallback } = React;
 
 /* ============================================================================
    DATA LAYER — researchStops() is the only seam.
-   Sample data exists ONLY for the two seeded cities below. Every other
-   city/theme routes to live research via the Cloudflare Worker. Paste your
-   deployed Worker URL into WORKER_URL to turn live research on.
+   Seed data exists for regional test routes near Southern Illinois/Missouri
+   plus a few flagship routes. Every other city/theme routes to live research
+   via the Cloudflare Worker. Paste your deployed Worker URL into WORKER_URL
+   to turn live research on.
    ========================================================================== */
 const WORKER_URL = ""; // e.g. "https://throughline-research.<sub>.workers.dev"
 
 const SAMPLE = {
-  "murals|Philadelphia": [
-    { name:"Common Threads", neighborhood:"North Broad St", address:"Broad & Spring Garden St", latitude:39.9628, longitude:-75.1626,
-      description:"Meg Saligman's eight-story figures are among the most photographed murals in the city — a natural anchor for a downtown mural walk.",
-      sourceName:"Mural Arts Philadelphia", sourceUrl:"https://www.muralarts.org/", confidence:"high", verificationStatus:"unverified", warningFlags:[], estimatedVisitMinutes:20 },
-    { name:"A Love Letter For You", neighborhood:"West Philadelphia", address:"Market St, along the El", latitude:39.9560, longitude:-75.2150,
-      description:"Steve Powers' series of rooftop messages, best seen riding the Market-Frankford El westbound. A moving viewing tour rather than one wall.",
-      sourceName:"Mural Arts Philadelphia", sourceUrl:"https://www.muralarts.org/", confidence:"high", verificationStatus:"unverified", warningFlags:[], estimatedVisitMinutes:45 },
-    { name:"How Philly Moves", neighborhood:"Near the Airport", address:"S 20th St area", latitude:39.8870, longitude:-75.2410,
-      description:"A sweeping dance-themed mural. The best vantage point is worth confirming before building it into a walking loop.",
-      sourceName:"Mural Arts Philadelphia", sourceUrl:"https://www.muralarts.org/", confidence:"medium", verificationStatus:"unverified", warningFlags:["approximate-location"], estimatedVisitMinutes:15 },
-    { name:"Garden of Delight", neighborhood:"Spring Garden", address:"Spring Garden corridor", latitude:39.9700, longitude:-75.1500,
-      description:"Listed across several walking-tour roundups. Exact wall and current condition should be verified against the arts registry.",
-      sourceName:"Visit Philadelphia", sourceUrl:"https://www.visitphilly.com/", confidence:"medium", verificationStatus:"unverified", warningFlags:["single-source"], estimatedVisitMinutes:15 },
-    { name:"Holding Grandmother's Quilt", neighborhood:"Unconfirmed area", address:"location unconfirmed", latitude:39.9800, longitude:-75.1700,
-      description:"Surfaced in a low-quality aggregator with no corroborating source. Flagged so you don't route to a wall that may not exist or may have moved.",
-      sourceName:"Unverified aggregator", sourceUrl:"https://www.muralarts.org/", confidence:"low", verificationStatus:"flagged", warningFlags:["approximate-location","single-source","may-be-removed"], estimatedVisitMinutes:10 },
+  "murals|Marion": [
+    {
+      "name": "First Responder Mural",
+      "neighborhood": "Tower Square",
+      "address": "Downtown Marion, IL",
+      "latitude": 37.7307,
+      "longitude": -88.9332,
+      "description": "Downtown Marion mural honoring military and first responders; strong anchor stop for a local mural walk.",
+      "sourceName": "VisitSI / Marion Murals",
+      "sourceUrl": "https://visitsi.com/destination-category/downtown-murals/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    },
+    {
+      "name": "All You Need Mural",
+      "neighborhood": "Downtown",
+      "address": "Downtown Marion, IL",
+      "latitude": 37.7304,
+      "longitude": -88.9338,
+      "description": "Bright downtown photo mural commonly listed in Marion mural guides.",
+      "sourceName": "VisitSI / Marion Murals",
+      "sourceUrl": "https://visitsi.com/destination-category/downtown-murals/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    },
+    {
+      "name": "Be My Neighbor Mural",
+      "neighborhood": "Downtown",
+      "address": "Downtown Marion, IL",
+      "latitude": 37.7305,
+      "longitude": -88.9345,
+      "description": "Mr. Rogers-inspired mural in the Marion Mural District, near the downtown square.",
+      "sourceName": "VisitSI / Marion Murals",
+      "sourceUrl": "https://visitsi.com/destination-category/downtown-murals/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    },
+    {
+      "name": "Postcards from the Past Mural",
+      "neighborhood": "Downtown",
+      "address": "Downtown Marion, IL",
+      "latitude": 37.7302,
+      "longitude": -88.9337,
+      "description": "Historic postcard-style mural tied to Marion's downtown identity and local memory.",
+      "sourceName": "VisitSI / Marion Murals",
+      "sourceUrl": "https://visitsi.com/destination-category/downtown-murals/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    },
+    {
+      "name": "Satchmo and the Duke Mural",
+      "neighborhood": "Downtown",
+      "address": "Downtown Marion, IL",
+      "latitude": 37.731,
+      "longitude": -88.9335,
+      "description": "Music-themed mural referencing Louis Armstrong and Duke Ellington in downtown Marion.",
+      "sourceName": "VisitSI / Marion Murals",
+      "sourceUrl": "https://visitsi.com/destination-category/downtown-murals/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    },
+    {
+      "name": "Chrysanthemum Mural",
+      "neighborhood": "Downtown",
+      "address": "Downtown Marion, IL",
+      "latitude": 37.7298,
+      "longitude": -88.934,
+      "description": "Floral public-art wall in the walkable downtown mural district.",
+      "sourceName": "VisitSI / Marion Murals",
+      "sourceUrl": "https://visitsi.com/destination-category/downtown-murals/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    },
+    {
+      "name": "Your Vibe Attracts Your Tribe Mural",
+      "neighborhood": "Downtown",
+      "address": "Downtown Marion, IL",
+      "latitude": 37.7299,
+      "longitude": -88.9331,
+      "description": "Colorful social-photo mural and easy stop in a downtown mural route.",
+      "sourceName": "VisitSI / Marion Murals",
+      "sourceUrl": "https://visitsi.com/destination-category/downtown-murals/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    },
+    {
+      "name": "Butterfly RISE Mural",
+      "neighborhood": "Downtown",
+      "address": "Downtown Marion, IL",
+      "latitude": 37.7306,
+      "longitude": -88.9326,
+      "description": "Butterfly-themed mural connected to Marion's growing mural district.",
+      "sourceName": "VisitSI / Marion Murals",
+      "sourceUrl": "https://visitsi.com/destination-category/downtown-murals/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    },
+    {
+      "name": "Support The Arts Mural",
+      "neighborhood": "Downtown",
+      "address": "Downtown Marion, IL",
+      "latitude": 37.7301,
+      "longitude": -88.9329,
+      "description": "Downtown mural reinforcing Marion's arts and culture identity.",
+      "sourceName": "VisitSI / Marion Murals",
+      "sourceUrl": "https://visitsi.com/destination-category/downtown-murals/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    },
+    {
+      "name": "M-Boutique Mural",
+      "neighborhood": "Downtown",
+      "address": "Downtown Marion, IL",
+      "latitude": 37.7308,
+      "longitude": -88.9342,
+      "description": "Boutique wall mural/photo stop in the Marion downtown district.",
+      "sourceName": "VisitSI / Marion Murals",
+      "sourceUrl": "https://visitsi.com/destination-category/downtown-murals/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    },
+    {
+      "name": "Old Downtown Mural",
+      "neighborhood": "Tower Square",
+      "address": "Downtown Marion, IL",
+      "latitude": 37.73,
+      "longitude": -88.9333,
+      "description": "Historic-scene mural depicting Marion's town square and more than a century of local industry.",
+      "sourceName": "VisitSI / Marion Murals",
+      "sourceUrl": "https://visitsi.com/destination-category/downtown-murals/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    },
+    {
+      "name": "Life is Art Mural",
+      "neighborhood": "Downtown",
+      "address": "Downtown Marion, IL",
+      "latitude": 37.7303,
+      "longitude": -88.933,
+      "description": "Mural listed by regional tourism as part of downtown Marion's public art landscape.",
+      "sourceName": "VisitSI / Marion Murals",
+      "sourceUrl": "https://visitsi.com/destination-category/downtown-murals/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    }
+  ],
+  "hidden|Marion": [
+    {
+      "name": "Marion Mural District",
+      "neighborhood": "Downtown",
+      "address": "Tower Square, Marion, IL",
+      "latitude": 37.7304,
+      "longitude": -88.9335,
+      "description": "Walkable downtown mural cluster around Tower Square; an ideal real-world test route for Throughline.",
+      "sourceName": "City of Marion",
+      "sourceUrl": "https://cityofmarionil.gov/mural-district/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    },
+    {
+      "name": "Marion Carnegie Library",
+      "neighborhood": "Downtown",
+      "address": "206 S Market St, Marion, IL",
+      "latitude": 37.7302,
+      "longitude": -88.9349,
+      "description": "Historic local library near the square; good cultural anchor for a downtown walking route.",
+      "sourceName": "Marion Carnegie Library",
+      "sourceUrl": "https://www.marioncarnegielibrary.org/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    },
+    {
+      "name": "Mandala Gardens",
+      "neighborhood": "Marion",
+      "address": "Marion, IL",
+      "latitude": 37.7349,
+      "longitude": -88.9438,
+      "description": "Locally loved garden and plant stop that fits the 'places worth pulling over for' lane.",
+      "sourceName": "Local search result",
+      "sourceUrl": "https://www.google.com/search?q=Mandala+Gardens+Marion+IL",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    },
+    {
+      "name": "Crab Orchard National Wildlife Refuge",
+      "neighborhood": "Marion area",
+      "address": "8588 Route 148, Marion, IL",
+      "latitude": 37.7207,
+      "longitude": -89.0446,
+      "description": "Nature-focused stop minutes from Marion with scenic drives, trails, water, and wildlife viewing.",
+      "sourceName": "U.S. Fish & Wildlife Service",
+      "sourceUrl": "https://www.fws.gov/refuge/crab-orchard",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    },
+    {
+      "name": "Williamson County Historical Museum",
+      "neighborhood": "Downtown",
+      "address": "105 S Van Buren St, Marion, IL",
+      "latitude": 37.7308,
+      "longitude": -88.9348,
+      "description": "Local-history stop near the downtown core; good add-on before or after mural walking.",
+      "sourceName": "Local tourism source",
+      "sourceUrl": "https://visitsi.com/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    }
+  ],
+  "hidden|Carbondale": [
+    {
+      "name": "Boo Rochman Memorial Park",
+      "neighborhood": "Carbondale",
+      "address": "31 Homewood Dr, Carbondale, IL",
+      "latitude": 37.6624,
+      "longitude": -89.251,
+      "description": "Castle-style fantasy playground and one of Southern Illinois' most unexpected family-friendly stops.",
+      "sourceName": "Local tourism source",
+      "sourceUrl": "https://www.google.com/search?q=Boo+Rochman+Memorial+Park",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    },
+    {
+      "name": "The Science Center of Southern Illinois",
+      "neighborhood": "Carbondale",
+      "address": "University Mall, Carbondale, IL",
+      "latitude": 37.7438,
+      "longitude": -89.2155,
+      "description": "Hands-on local science museum; useful indoor stop for a family route.",
+      "sourceName": "The Science Center",
+      "sourceUrl": "https://sciencecentersi.org/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    },
+    {
+      "name": "SIU Campus Lake",
+      "neighborhood": "SIU",
+      "address": "Southern Illinois University",
+      "latitude": 37.7135,
+      "longitude": -89.2159,
+      "description": "Quiet scenic campus lake for a walkable nature pause close to downtown Carbondale.",
+      "sourceName": "SIU",
+      "sourceUrl": "https://siu.edu/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    },
+    {
+      "name": "Varsity Center for the Arts",
+      "neighborhood": "Downtown",
+      "address": "418 S Illinois Ave, Carbondale, IL",
+      "latitude": 37.7271,
+      "longitude": -89.2168,
+      "description": "Historic theater and arts venue on the downtown strip.",
+      "sourceName": "Varsity Center",
+      "sourceUrl": "https://thevarsitycenter.org/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    }
+  ],
+  "hidden|Makanda": [
+    {
+      "name": "Makanda Boardwalk",
+      "neighborhood": "Downtown",
+      "address": "Makanda Boardwalk, Makanda, IL",
+      "latitude": 37.6176,
+      "longitude": -89.2232,
+      "description": "Tiny artsy boardwalk village at the edge of Giant City; ideal hidden-gems anchor.",
+      "sourceName": "Local tourism source",
+      "sourceUrl": "https://www.google.com/search?q=Makanda+Boardwalk",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    },
+    {
+      "name": "Giant City State Park",
+      "neighborhood": "Makanda area",
+      "address": "Giant City State Park, Makanda, IL",
+      "latitude": 37.5987,
+      "longitude": -89.1884,
+      "description": "Bluff, forest, and stone-fort style trails; a signature Southern Illinois nature stop.",
+      "sourceName": "Illinois DNR",
+      "sourceUrl": "https://dnr.illinois.gov/parks/park.giantcity.html",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    },
+    {
+      "name": "Giant City Lodge",
+      "neighborhood": "Giant City",
+      "address": "Giant City Lodge, Makanda, IL",
+      "latitude": 37.6026,
+      "longitude": -89.1872,
+      "description": "Rustic lodge and fried-chicken landmark inside Giant City State Park.",
+      "sourceName": "Giant City Lodge",
+      "sourceUrl": "https://giantcitylodge.com/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    }
+  ],
+  "hidden|Metropolis": [
+    {
+      "name": "Superman Statue",
+      "neighborhood": "Downtown",
+      "address": "Superman Square, Metropolis, IL",
+      "latitude": 37.1512,
+      "longitude": -88.732,
+      "description": "Roadside-pop landmark in the official hometown of Superman.",
+      "sourceName": "Metropolis Tourism",
+      "sourceUrl": "https://www.metropolistourism.com/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    },
+    {
+      "name": "Super Museum",
+      "neighborhood": "Downtown",
+      "address": "517 Market St, Metropolis, IL",
+      "latitude": 37.1511,
+      "longitude": -88.7321,
+      "description": "A dense pop-culture collection next to the Superman statue.",
+      "sourceName": "Super Museum",
+      "sourceUrl": "https://supermuseum.com/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    },
+    {
+      "name": "Fort Massac State Park",
+      "neighborhood": "Riverfront",
+      "address": "Fort Massac State Park, Metropolis, IL",
+      "latitude": 37.1432,
+      "longitude": -88.709,
+      "description": "Historic riverfront fort site and state park overlooking the Ohio River.",
+      "sourceName": "Illinois DNR",
+      "sourceUrl": "https://dnr.illinois.gov/parks/park.fortmassac.html",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    }
+  ],
+  "hidden|Alton": [
+    {
+      "name": "McPike Mansion",
+      "neighborhood": "Alton",
+      "address": "2018 Alby St, Alton, IL",
+      "latitude": 38.8977,
+      "longitude": -90.175,
+      "description": "Famous haunted mansion stop in one of Illinois' best towns for ghost-history routes.",
+      "sourceName": "Great Rivers & Routes",
+      "sourceUrl": "https://www.riversandroutes.com/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    },
+    {
+      "name": "Piasa Bird Mural",
+      "neighborhood": "River Road",
+      "address": "IL-100, Alton, IL",
+      "latitude": 38.8966,
+      "longitude": -90.2079,
+      "description": "Iconic cliffside bird mural tied to local legend along the Mississippi River.",
+      "sourceName": "Great Rivers & Routes",
+      "sourceUrl": "https://www.riversandroutes.com/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    },
+    {
+      "name": "Robert Wadlow Statue",
+      "neighborhood": "Alton",
+      "address": "2800 College Ave, Alton, IL",
+      "latitude": 38.9108,
+      "longitude": -90.1489,
+      "description": "Statue honoring Alton native Robert Wadlow, the tallest person in recorded history.",
+      "sourceName": "Great Rivers & Routes",
+      "sourceUrl": "https://www.riversandroutes.com/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    }
+  ],
+  "hidden|Casey": [
+    {
+      "name": "World's Largest Wind Chime",
+      "neighborhood": "Downtown",
+      "address": "Casey, IL",
+      "latitude": 39.2993,
+      "longitude": -87.9925,
+      "description": "Oversized roadside attraction anchoring Casey's collection of 'world's largest' objects.",
+      "sourceName": "City of Casey",
+      "sourceUrl": "https://www.bigthingssmalltown.com/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    },
+    {
+      "name": "World's Largest Rocking Chair",
+      "neighborhood": "Downtown",
+      "address": "Casey, IL",
+      "latitude": 39.2992,
+      "longitude": -87.9926,
+      "description": "One of Casey's signature giant objects; easy photo stop.",
+      "sourceName": "Big Things Small Town",
+      "sourceUrl": "https://www.bigthingssmalltown.com/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    },
+    {
+      "name": "World's Largest Mailbox",
+      "neighborhood": "Downtown",
+      "address": "Casey, IL",
+      "latitude": 39.299,
+      "longitude": -87.9928,
+      "description": "Climbable giant mailbox and classic family road-trip stop.",
+      "sourceName": "Big Things Small Town",
+      "sourceUrl": "https://www.bigthingssmalltown.com/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    }
+  ],
+  "hidden|Springfield": [
+    {
+      "name": "Route 66 Drive-In",
+      "neighborhood": "Springfield",
+      "address": "1700 Recreation Dr, Springfield, IL",
+      "latitude": 39.7735,
+      "longitude": -89.7061,
+      "description": "Nostalgic drive-in theater and easy Route 66 culture stop.",
+      "sourceName": "Route 66 Drive In",
+      "sourceUrl": "https://www.route66-drivein.com/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    },
+    {
+      "name": "Dana-Thomas House",
+      "neighborhood": "Downtown",
+      "address": "301 E Lawrence Ave, Springfield, IL",
+      "latitude": 39.7932,
+      "longitude": -89.6501,
+      "description": "Frank Lloyd Wright-designed house; strong architecture and history stop.",
+      "sourceName": "Illinois DNR",
+      "sourceUrl": "https://dnr.illinois.gov/parks/historic-sites/dana-thomas.html",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    },
+    {
+      "name": "Lincoln Tomb",
+      "neighborhood": "Springfield",
+      "address": "1500 Monument Ave, Springfield, IL",
+      "latitude": 39.8222,
+      "longitude": -89.6532,
+      "description": "Major monument and memorial site in Oak Ridge Cemetery.",
+      "sourceName": "Illinois DNR",
+      "sourceUrl": "https://dnr.illinois.gov/parks/historic-sites/lincoln-tomb.html",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    }
+  ],
+  "murals|Springfield": [
+    {
+      "name": "Route 66 Postcard Mural Trail - Springfield Area",
+      "neighborhood": "Route 66",
+      "address": "Springfield, IL",
+      "latitude": 39.8017,
+      "longitude": -89.6436,
+      "description": "A Route 66 mural-trail anchor in the Illinois capital region; good for a broader Mother Road art route.",
+      "sourceName": "Great Rivers & Routes",
+      "sourceUrl": "https://www.riversandroutes.com/blog/route-66-postcard-mural-trail/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    }
+  ],
+  "architecture|Chicago": [
+    {
+      "name": "Chicago Cultural Center",
+      "neighborhood": "Loop",
+      "address": "78 E Washington St, Chicago, IL",
+      "latitude": 41.8838,
+      "longitude": -87.6247,
+      "description": "Landmark public building known for its Tiffany glass dome and ornate interiors.",
+      "sourceName": "Chicago Architecture Center",
+      "sourceUrl": "https://www.architecture.org/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    },
+    {
+      "name": "The Rookery Building",
+      "neighborhood": "Loop",
+      "address": "209 S LaSalle St, Chicago, IL",
+      "latitude": 41.8791,
+      "longitude": -87.6313,
+      "description": "Historic Burnham & Root building with a Frank Lloyd Wright-renovated light court.",
+      "sourceName": "Chicago Architecture Center",
+      "sourceUrl": "https://www.architecture.org/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    },
+    {
+      "name": "Robie House",
+      "neighborhood": "Hyde Park",
+      "address": "5757 S Woodlawn Ave, Chicago, IL",
+      "latitude": 41.7897,
+      "longitude": -87.5957,
+      "description": "Frank Lloyd Wright Prairie-style masterpiece on the University of Chicago campus.",
+      "sourceName": "Frank Lloyd Wright Trust",
+      "sourceUrl": "https://flwright.org/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    },
+    {
+      "name": "Marina City",
+      "neighborhood": "River North",
+      "address": "300 N State St, Chicago, IL",
+      "latitude": 41.8876,
+      "longitude": -87.6282,
+      "description": "Twin corncob towers and one of Chicago's most recognizable modernist housing complexes.",
+      "sourceName": "Chicago Architecture Center",
+      "sourceUrl": "https://www.architecture.org/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    },
+    {
+      "name": "Tribune Tower",
+      "neighborhood": "Magnificent Mile",
+      "address": "435 N Michigan Ave, Chicago, IL",
+      "latitude": 41.8904,
+      "longitude": -87.6232,
+      "description": "Gothic Revival tower along Michigan Avenue; famous for embedded stones from world landmarks.",
+      "sourceName": "Chicago Architecture Center",
+      "sourceUrl": "https://www.architecture.org/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    },
+    {
+      "name": "Wrigley Building",
+      "neighborhood": "Magnificent Mile",
+      "address": "400 N Michigan Ave, Chicago, IL",
+      "latitude": 41.8897,
+      "longitude": -87.6244,
+      "description": "White terra-cotta landmark at the Michigan Avenue bridge.",
+      "sourceName": "Chicago Architecture Center",
+      "sourceUrl": "https://www.architecture.org/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    },
+    {
+      "name": "Aqua Tower",
+      "neighborhood": "Lakeshore East",
+      "address": "225 N Columbus Dr, Chicago, IL",
+      "latitude": 41.8864,
+      "longitude": -87.6207,
+      "description": "Contemporary Jeanne Gang-designed tower with wave-like balconies.",
+      "sourceName": "Chicago Architecture Center",
+      "sourceUrl": "https://www.architecture.org/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    },
+    {
+      "name": "Willis Tower",
+      "neighborhood": "Loop",
+      "address": "233 S Wacker Dr, Chicago, IL",
+      "latitude": 41.8789,
+      "longitude": -87.6359,
+      "description": "Former world's tallest building and major skyline anchor.",
+      "sourceName": "Skydeck Chicago",
+      "sourceUrl": "https://theskydeck.com/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    }
+  ],
+  "hidden|Chicago": [
+    {
+      "name": "Oz Park",
+      "neighborhood": "Lincoln Park",
+      "address": "2021 N Burling St, Chicago, IL",
+      "latitude": 41.9211,
+      "longitude": -87.6361,
+      "description": "Neighborhood park with Wizard of Oz-themed sculptures.",
+      "sourceName": "Chicago Park District",
+      "sourceUrl": "https://www.chicagoparkdistrict.com/parks-facilities/oz-park",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    },
+    {
+      "name": "Garfield Park Conservatory",
+      "neighborhood": "Garfield Park",
+      "address": "300 N Central Park Ave, Chicago, IL",
+      "latitude": 41.8863,
+      "longitude": -87.7167,
+      "description": "Massive historic glasshouse often called landscape art under glass.",
+      "sourceName": "Garfield Park Conservatory",
+      "sourceUrl": "https://garfieldconservatory.org/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    },
+    {
+      "name": "Shit Fountain",
+      "neighborhood": "Ukrainian Village",
+      "address": "1001 N Wolcott Ave, Chicago, IL",
+      "latitude": 41.9417,
+      "longitude": -87.6769,
+      "description": "Infamous neighborhood anti-dog-poop fountain; exactly the kind of weird stop people talk about.",
+      "sourceName": "Atlas Obscura",
+      "sourceUrl": "https://www.atlasobscura.com/places/shit-fountain",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    }
+  ],
+  "hidden|St. Louis": [
+    {
+      "name": "City Museum",
+      "neighborhood": "Downtown West",
+      "address": "750 N 16th St, St. Louis, MO",
+      "latitude": 38.6336,
+      "longitude": -90.2004,
+      "description": "Wild indoor/outdoor found-object playground, museum, and art maze; a signature hidden-gem anchor.",
+      "sourceName": "City Museum",
+      "sourceUrl": "https://citymuseum.org/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    },
+    {
+      "name": "Venice Caf\u00e9",
+      "neighborhood": "Benton Park",
+      "address": "1903 Pestalozzi St, St. Louis, MO",
+      "latitude": 38.5947,
+      "longitude": -90.2176,
+      "description": "Mosaic-covered local institution and one of St. Louis' most visually unusual bars.",
+      "sourceName": "Venice Cafe",
+      "sourceUrl": "https://www.thevenicecafe.com/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    },
+    {
+      "name": "Laclede's Landing Wax Museum",
+      "neighborhood": "Laclede's Landing",
+      "address": "720 N 2nd St, St. Louis, MO",
+      "latitude": 38.6306,
+      "longitude": -90.1847,
+      "description": "Oddball downtown attraction in a historic district; verify hours before routing.",
+      "sourceName": "Local tourism source",
+      "sourceUrl": "https://explorestlouis.com/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    },
+    {
+      "name": "Cahokia Mounds State Historic Site",
+      "neighborhood": "Metro East",
+      "address": "30 Ramey St, Collinsville, IL",
+      "latitude": 38.6556,
+      "longitude": -90.0618,
+      "description": "UNESCO World Heritage site across the river in Illinois; ancient city mounds and interpretive trails.",
+      "sourceName": "Illinois DNR",
+      "sourceUrl": "https://cahokiamounds.org/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    },
+    {
+      "name": "Laumeier Sculpture Park",
+      "neighborhood": "Sunset Hills",
+      "address": "12580 Rott Rd, St. Louis, MO",
+      "latitude": 38.5512,
+      "longitude": -90.4147,
+      "description": "Outdoor sculpture park that fits public art and hidden-gem itineraries.",
+      "sourceName": "Laumeier Sculpture Park",
+      "sourceUrl": "https://www.laumeiersculpturepark.org/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    },
+    {
+      "name": "The Moto Museum",
+      "neighborhood": "Grand Center",
+      "address": "3441 Olive St, St. Louis, MO",
+      "latitude": 38.639,
+      "longitude": -90.2306,
+      "description": "Motorcycle museum near Grand Center; verify open status before visiting.",
+      "sourceName": "Local tourism source",
+      "sourceUrl": "https://explorestlouis.com/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    }
   ],
   "murals|St. Louis": [
-    { name:"Paint Louis Floodwall", neighborhood:"Mississippi Riverfront", address:"Wharf St floodwall", latitude:38.6090, longitude:-90.1840,
-      description:"A long stretch of the Mississippi floodwall repainted each year during the Paint Louis event. Walkable end to end and a strong centerpiece.",
-      sourceName:"Paint Louis", sourceUrl:"https://www.paintlouis.org/", confidence:"medium", verificationStatus:"unverified", warningFlags:["seasonal"], estimatedVisitMinutes:40 },
-    { name:"The Grove Murals", neighborhood:"The Grove", address:"Manchester Ave", latitude:38.6300, longitude:-90.2680,
-      description:"The Grove's commercial strip is dense with murals along Manchester Ave. Best treated as a short cluster walk rather than one stop.",
-      sourceName:"Explore St. Louis", sourceUrl:"https://explorestlouis.com/", confidence:"medium", verificationStatus:"unverified", warningFlags:[], estimatedVisitMinutes:30 },
-    { name:"Cherokee Street Murals", neighborhood:"Cherokee Street", address:"Cherokee St", latitude:38.5910, longitude:-90.2230,
-      description:"The Cherokee Street arts district has a rotating set of murals. Confirm which are current before mapping a route.",
-      sourceName:"Explore St. Louis", sourceUrl:"https://explorestlouis.com/", confidence:"medium", verificationStatus:"unverified", warningFlags:[], estimatedVisitMinutes:25 },
-    { name:"\"Migrate\" Mural", neighborhood:"Unconfirmed area", address:"location unconfirmed", latitude:38.6270, longitude:-90.2700,
-      description:"Title and rough area only; no reliable source for the exact wall. Flagged so it doesn't anchor your route until confirmed.",
-      sourceName:"Unverified aggregator", sourceUrl:"https://explorestlouis.com/", confidence:"low", verificationStatus:"flagged", warningFlags:["approximate-location","single-source"], estimatedVisitMinutes:10 },
-    { name:"Downtown Public Art Wall", neighborhood:"Downtown", address:"downtown core", latitude:38.6280, longitude:-90.1920,
-      description:"A general downtown public-art listing without a precise location. Low confidence until cross-checked.",
-      sourceName:"City listing", sourceUrl:"https://explorestlouis.com/", confidence:"low", verificationStatus:"unverified", warningFlags:["single-source"], estimatedVisitMinutes:15 },
+    {
+      "name": "Paint Louis Floodwall",
+      "neighborhood": "Riverfront",
+      "address": "Wharf St floodwall",
+      "latitude": 38.609,
+      "longitude": -90.184,
+      "description": "Long Mississippi floodwall mural area repainted through the Paint Louis festival.",
+      "sourceName": "Paint Louis",
+      "sourceUrl": "https://www.paintlouis.org/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    },
+    {
+      "name": "The Grove Murals",
+      "neighborhood": "The Grove",
+      "address": "Manchester Ave",
+      "latitude": 38.63,
+      "longitude": -90.268,
+      "description": "Manchester Ave mural cluster in The Grove; better as a walkable district than a single wall.",
+      "sourceName": "Explore St. Louis",
+      "sourceUrl": "https://explorestlouis.com/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    },
+    {
+      "name": "Cherokee Street Murals",
+      "neighborhood": "Cherokee Street",
+      "address": "Cherokee St",
+      "latitude": 38.591,
+      "longitude": -90.223,
+      "description": "Rotating mural and street-art district along Cherokee Street.",
+      "sourceName": "Explore St. Louis",
+      "sourceUrl": "https://explorestlouis.com/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    },
+    {
+      "name": "Mural Mile / Riverfront Wall",
+      "neighborhood": "Riverfront",
+      "address": "St. Louis Riverfront",
+      "latitude": 38.6125,
+      "longitude": -90.185,
+      "description": "Graffiti and mural stretch along the Mississippi riverfront.",
+      "sourceName": "Explore St. Louis",
+      "sourceUrl": "https://explorestlouis.com/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    }
   ],
+  "hidden|Kansas City": [
+    {
+      "name": "The Scout Statue",
+      "neighborhood": "Penn Valley Park",
+      "address": "Penn Valley Park, Kansas City, MO",
+      "latitude": 39.0448,
+      "longitude": -94.586,
+      "description": "Hilltop statue with one of the city's best skyline views.",
+      "sourceName": "Visit KC",
+      "sourceUrl": "https://www.visitkc.com/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    },
+    {
+      "name": "Kansas City Workhouse Castle",
+      "neighborhood": "East Bottoms",
+      "address": "2001 Vine St, Kansas City, MO",
+      "latitude": 39.0947,
+      "longitude": -94.5496,
+      "description": "Ruined stone workhouse castle; visually striking, but access should be verified.",
+      "sourceName": "Local source",
+      "sourceUrl": "https://www.google.com/search?q=Kansas+City+Workhouse+Castle",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    },
+    {
+      "name": "Museum of Illusions / Union Station Area",
+      "neighborhood": "Crown Center",
+      "address": "30 W Pershing Rd, Kansas City, MO",
+      "latitude": 39.084,
+      "longitude": -94.5856,
+      "description": "Union Station cluster with family-friendly oddities and rotating exhibits.",
+      "sourceName": "Union Station",
+      "sourceUrl": "https://unionstation.org/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    },
+    {
+      "name": "18th & Vine Jazz District",
+      "neighborhood": "18th & Vine",
+      "address": "Kansas City, MO",
+      "latitude": 39.0914,
+      "longitude": -94.5621,
+      "description": "Historic jazz district with music, baseball, and Black cultural history anchors.",
+      "sourceName": "Visit KC",
+      "sourceUrl": "https://www.visitkc.com/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    }
+  ],
+  "hidden|Hannibal": [
+    {
+      "name": "Mark Twain Boyhood Home",
+      "neighborhood": "Downtown",
+      "address": "120 N Main St, Hannibal, MO",
+      "latitude": 39.7092,
+      "longitude": -91.3574,
+      "description": "Literary landmark and downtown cluster tied to Mark Twain's childhood.",
+      "sourceName": "Mark Twain Museum",
+      "sourceUrl": "https://marktwainmuseum.org/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    },
+    {
+      "name": "Mark Twain Cave",
+      "neighborhood": "Hannibal",
+      "address": "300 Cave Hollow Rd, Hannibal, MO",
+      "latitude": 39.681,
+      "longitude": -91.35,
+      "description": "Historic cave connected to Twain stories and regional lore.",
+      "sourceName": "Mark Twain Cave",
+      "sourceUrl": "https://www.marktwaincave.com/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    },
+    {
+      "name": "Lover's Leap",
+      "neighborhood": "Hannibal",
+      "address": "Lover's Leap, Hannibal, MO",
+      "latitude": 39.6906,
+      "longitude": -91.3626,
+      "description": "Scenic overlook above the Mississippi with local legend attached.",
+      "sourceName": "Visit Hannibal",
+      "sourceUrl": "https://visithannibal.com/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    }
+  ],
+  "hidden|Branson": [
+    {
+      "name": "Marvel Cave",
+      "neighborhood": "Branson",
+      "address": "Silver Dollar City, Branson, MO",
+      "latitude": 36.6676,
+      "longitude": -93.3401,
+      "description": "Historic cave beneath Silver Dollar City; best treated as ticketed/indoor-tour stop.",
+      "sourceName": "Silver Dollar City",
+      "sourceUrl": "https://www.silverdollarcity.com/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    },
+    {
+      "name": "Table Rock Lake Overlook",
+      "neighborhood": "Table Rock",
+      "address": "Branson, MO",
+      "latitude": 36.594,
+      "longitude": -93.31,
+      "description": "Scenic lake overlook and outdoor pause near the tourist strip.",
+      "sourceName": "Explore Branson",
+      "sourceUrl": "https://www.explorebranson.com/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    },
+    {
+      "name": "College of the Ozarks Mill",
+      "neighborhood": "Point Lookout",
+      "address": "College of the Ozarks",
+      "latitude": 36.619,
+      "longitude": -93.2373,
+      "description": "Campus mill and working farm/heritage stop; verify visitor access.",
+      "sourceName": "College of the Ozarks",
+      "sourceUrl": "https://www.cofo.edu/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    }
+  ],
+  "hidden|Indianapolis": [
+    {
+      "name": "Catacombs under City Market",
+      "neighborhood": "Downtown",
+      "address": "222 E Market St, Indianapolis, IN",
+      "latitude": 39.7687,
+      "longitude": -86.153,
+      "description": "Roman-looking brick arches below City Market; tour availability varies.",
+      "sourceName": "Indiana Landmarks",
+      "sourceUrl": "https://www.indianalandmarks.org/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    },
+    {
+      "name": "Kurt Vonnegut Museum and Library",
+      "neighborhood": "Downtown",
+      "address": "543 Indiana Ave, Indianapolis, IN",
+      "latitude": 39.7722,
+      "longitude": -86.1613,
+      "description": "Literary and cultural stop honoring Indianapolis-born Kurt Vonnegut.",
+      "sourceName": "Vonnegut Museum",
+      "sourceUrl": "https://www.vonnegutlibrary.org/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    },
+    {
+      "name": "Idle Park Overlook",
+      "neighborhood": "Fountain Square",
+      "address": "Idle Park, Indianapolis, IN",
+      "latitude": 39.7626,
+      "longitude": -86.1506,
+      "description": "Small urban overlook made from a former highway ramp, facing the downtown skyline.",
+      "sourceName": "Local source",
+      "sourceUrl": "https://www.google.com/search?q=Idle+Park+Indianapolis",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    }
+  ],
+  "hidden|Bloomington": [
+    {
+      "name": "Rose Well House",
+      "neighborhood": "IU Campus",
+      "address": "Indiana University, Bloomington, IN",
+      "latitude": 39.1684,
+      "longitude": -86.5234,
+      "description": "Romantic campus landmark and easy Indiana University walking stop.",
+      "sourceName": "Indiana University",
+      "sourceUrl": "https://www.indiana.edu/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    },
+    {
+      "name": "Eskenazi Museum of Art",
+      "neighborhood": "IU Campus",
+      "address": "1133 E 7th St, Bloomington, IN",
+      "latitude": 39.1682,
+      "longitude": -86.5163,
+      "description": "High-quality university art museum with an I.M. Pei-designed building.",
+      "sourceName": "Eskenazi Museum",
+      "sourceUrl": "https://artmuseum.indiana.edu/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    },
+    {
+      "name": "Oliver Winery",
+      "neighborhood": "Bloomington area",
+      "address": "200 E Winery Rd, Bloomington, IN",
+      "latitude": 39.2194,
+      "longitude": -86.5357,
+      "description": "Scenic winery north of Bloomington; useful couple-trip add-on.",
+      "sourceName": "Oliver Winery",
+      "sourceUrl": "https://www.oliverwinery.com/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    }
+  ],
+  "hidden|Louisville": [
+    {
+      "name": "Waverly Hills Sanatorium",
+      "neighborhood": "South Louisville",
+      "address": "4400 Paralee Dr, Louisville, KY",
+      "latitude": 38.1303,
+      "longitude": -85.8415,
+      "description": "Famous abandoned sanatorium and paranormal-tour landmark; verify tour availability.",
+      "sourceName": "Waverly Hills",
+      "sourceUrl": "https://www.therealwaverlyhills.com/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    },
+    {
+      "name": "Cave Hill Cemetery",
+      "neighborhood": "Highlands",
+      "address": "701 Baxter Ave, Louisville, KY",
+      "latitude": 38.2441,
+      "longitude": -85.7152,
+      "description": "Historic cemetery, arboretum, and Muhammad Ali burial site.",
+      "sourceName": "Cave Hill Cemetery",
+      "sourceUrl": "https://www.cavehillcemetery.com/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    },
+    {
+      "name": "Big Four Bridge",
+      "neighborhood": "Waterfront",
+      "address": "Big Four Bridge, Louisville, KY",
+      "latitude": 38.2636,
+      "longitude": -85.744,
+      "description": "Pedestrian bridge over the Ohio River connecting Louisville and Jeffersonville.",
+      "sourceName": "Louisville Tourism",
+      "sourceUrl": "https://www.gotolouisville.com/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    },
+    {
+      "name": "21c Museum Hotel",
+      "neighborhood": "Downtown",
+      "address": "700 W Main St, Louisville, KY",
+      "latitude": 38.2569,
+      "longitude": -85.7611,
+      "description": "Contemporary art hotel with public gallery spaces; excellent public-art anchor.",
+      "sourceName": "21c Museum Hotel",
+      "sourceUrl": "https://www.21cmuseumhotels.com/louisville/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    }
+  ],
+  "hidden|Paducah": [
+    {
+      "name": "Paducah Wall to Wall Murals",
+      "neighborhood": "Riverfront",
+      "address": "Water St, Paducah, KY",
+      "latitude": 37.0874,
+      "longitude": -88.594,
+      "description": "Floodwall murals telling local river, rail, and cultural history.",
+      "sourceName": "Paducah Travel",
+      "sourceUrl": "https://www.paducah.travel/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    },
+    {
+      "name": "National Quilt Museum",
+      "neighborhood": "Downtown",
+      "address": "215 Jefferson St, Paducah, KY",
+      "latitude": 37.0878,
+      "longitude": -88.5973,
+      "description": "Major textile-art museum in a UNESCO Creative City.",
+      "sourceName": "National Quilt Museum",
+      "sourceUrl": "https://quiltmuseum.org/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    },
+    {
+      "name": "Lower Town Arts District",
+      "neighborhood": "Lower Town",
+      "address": "Paducah, KY",
+      "latitude": 37.0865,
+      "longitude": -88.6007,
+      "description": "Historic neighborhood and arts district with galleries and local character.",
+      "sourceName": "Paducah Travel",
+      "sourceUrl": "https://www.paducah.travel/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    }
+  ],
+  "music|Nashville": [
+    {
+      "name": "Ryman Auditorium",
+      "neighborhood": "Downtown",
+      "address": "116 5th Ave N, Nashville, TN",
+      "latitude": 36.1613,
+      "longitude": -86.7785,
+      "description": "Historic 'Mother Church of Country Music' and downtown anchor.",
+      "sourceName": "Ryman Auditorium",
+      "sourceUrl": "https://www.ryman.com/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    },
+    {
+      "name": "RCA Studio B",
+      "neighborhood": "Music Row",
+      "address": "1611 Roy Acuff Pl, Nashville, TN",
+      "latitude": 36.1502,
+      "longitude": -86.7922,
+      "description": "Legendary Music Row studio tied to Elvis, Dolly, and the Nashville Sound.",
+      "sourceName": "Country Music Hall of Fame",
+      "sourceUrl": "https://www.countrymusichalloffame.org/experiences/historic-rca-studio-b",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    },
+    {
+      "name": "Bluebird Cafe",
+      "neighborhood": "Green Hills",
+      "address": "4104 Hillsboro Pike, Nashville, TN",
+      "latitude": 36.1059,
+      "longitude": -86.816,
+      "description": "Tiny listening room famous for songwriter rounds.",
+      "sourceName": "The Bluebird Cafe",
+      "sourceUrl": "https://bluebirdcafe.com/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    },
+    {
+      "name": "Country Music Hall of Fame",
+      "neighborhood": "Downtown",
+      "address": "222 Rep. John Lewis Way S, Nashville, TN",
+      "latitude": 36.1582,
+      "longitude": -86.7761,
+      "description": "Major museum and route hub for country-music history.",
+      "sourceName": "Country Music Hall of Fame",
+      "sourceUrl": "https://www.countrymusichalloffame.org/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    },
+    {
+      "name": "Printer's Alley",
+      "neighborhood": "Downtown",
+      "address": "Printer's Alley, Nashville, TN",
+      "latitude": 36.1647,
+      "longitude": -86.7773,
+      "description": "Historic nightlife alley tied to jazz, country, and downtown entertainment.",
+      "sourceName": "Visit Music City",
+      "sourceUrl": "https://www.visitmusiccity.com/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    },
+    {
+      "name": "Hatch Show Print",
+      "neighborhood": "Downtown",
+      "address": "224 Rep. John Lewis Way S, Nashville, TN",
+      "latitude": 36.1584,
+      "longitude": -86.7764,
+      "description": "Historic letterpress shop closely tied to American music posters.",
+      "sourceName": "Hatch Show Print",
+      "sourceUrl": "https://www.hatchshowprint.com/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    }
+  ],
+  "hidden|Memphis": [
+    {
+      "name": "Crystal Shrine Grotto",
+      "neighborhood": "East Memphis",
+      "address": "5668 Poplar Ave, Memphis, TN",
+      "latitude": 35.0961,
+      "longitude": -89.8807,
+      "description": "Handmade cave-like shrine inside Memorial Park Cemetery.",
+      "sourceName": "Memphis Travel",
+      "sourceUrl": "https://www.memphistravel.com/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    },
+    {
+      "name": "Stax Museum of American Soul Music",
+      "neighborhood": "Soulsville",
+      "address": "926 E McLemore Ave, Memphis, TN",
+      "latitude": 35.1151,
+      "longitude": -90.0319,
+      "description": "Essential soul-music landmark on the site of Stax Records.",
+      "sourceName": "Stax Museum",
+      "sourceUrl": "https://staxmuseum.com/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    },
+    {
+      "name": "Big River Crossing",
+      "neighborhood": "Riverfront",
+      "address": "Big River Crossing, Memphis, TN",
+      "latitude": 35.1295,
+      "longitude": -90.074,
+      "description": "Pedestrian crossing over the Mississippi with skyline and river views.",
+      "sourceName": "Big River Crossing",
+      "sourceUrl": "https://www.bigrivercrossing.com/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    }
+  ],
+  "hidden|Little Rock": [
+    {
+      "name": "The Old Mill",
+      "neighborhood": "North Little Rock",
+      "address": "3800 Lakeshore Dr, North Little Rock, AR",
+      "latitude": 34.7928,
+      "longitude": -92.2578,
+      "description": "Picturesque faux-ruin mill that appears in the opening scenes of Gone with the Wind.",
+      "sourceName": "North Little Rock Tourism",
+      "sourceUrl": "https://northlittlerock.org/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    },
+    {
+      "name": "Esse Purse Museum",
+      "neighborhood": "SOMA",
+      "address": "1510 Main St, Little Rock, AR",
+      "latitude": 34.7404,
+      "longitude": -92.2741,
+      "description": "Unexpected museum exploring women's history through handbags.",
+      "sourceName": "Esse Purse Museum",
+      "sourceUrl": "https://essepursemuseum.com/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    },
+    {
+      "name": "Little Rock Central High School National Historic Site",
+      "neighborhood": "Central High",
+      "address": "2120 W Daisy L Gatson Bates Dr, Little Rock, AR",
+      "latitude": 34.7364,
+      "longitude": -92.2995,
+      "description": "Major civil-rights history stop and National Historic Site.",
+      "sourceName": "National Park Service",
+      "sourceUrl": "https://www.nps.gov/chsc/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    }
+  ],
+  "hidden|Hot Springs": [
+    {
+      "name": "Bathhouse Row",
+      "neighborhood": "Downtown",
+      "address": "Bathhouse Row, Hot Springs, AR",
+      "latitude": 34.5137,
+      "longitude": -93.0544,
+      "description": "Historic thermal bathhouse district inside Hot Springs National Park.",
+      "sourceName": "National Park Service",
+      "sourceUrl": "https://www.nps.gov/hosp/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    },
+    {
+      "name": "Gangster Museum of America",
+      "neighborhood": "Downtown",
+      "address": "510 Central Ave, Hot Springs, AR",
+      "latitude": 34.5132,
+      "longitude": -93.0546,
+      "description": "Odd local-history museum focused on Hot Springs' gangster-era past.",
+      "sourceName": "Gangster Museum",
+      "sourceUrl": "https://www.tgmoa.com/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    },
+    {
+      "name": "Garvan Woodland Gardens",
+      "neighborhood": "Hot Springs",
+      "address": "550 Arkridge Rd, Hot Springs, AR",
+      "latitude": 34.4324,
+      "longitude": -93.0657,
+      "description": "Botanical garden and architectural chapel stop outside the downtown bathhouse district.",
+      "sourceName": "Garvan Woodland Gardens",
+      "sourceUrl": "https://www.garvangardens.org/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    }
+  ],
+  "hidden|Des Moines": [
+    {
+      "name": "Pappajohn Sculpture Park",
+      "neighborhood": "Western Gateway",
+      "address": "1330 Grand Ave, Des Moines, IA",
+      "latitude": 41.5849,
+      "longitude": -93.634,
+      "description": "Downtown sculpture park with major contemporary works and easy walking routes.",
+      "sourceName": "Des Moines Art Center",
+      "sourceUrl": "https://desmoinesartcenter.org/visit/pappajohn-sculpture-park/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    },
+    {
+      "name": "High Trestle Trail Bridge",
+      "neighborhood": "Madrid area",
+      "address": "High Trestle Trail Bridge, IA",
+      "latitude": 41.8792,
+      "longitude": -93.8947,
+      "description": "Iconic lit bike/pedestrian bridge north of Des Moines; strong sunset stop.",
+      "sourceName": "Iowa Natural Heritage Foundation",
+      "sourceUrl": "https://www.inhf.org/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    },
+    {
+      "name": "Salisbury House & Gardens",
+      "neighborhood": "South of Grand",
+      "address": "4025 Tonawanda Dr, Des Moines, IA",
+      "latitude": 41.5822,
+      "longitude": -93.6716,
+      "description": "Historic mansion and gardens with art, architecture, and literary connections.",
+      "sourceName": "Salisbury House",
+      "sourceUrl": "https://salisburyhouse.org/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    }
+  ],
+  "hidden|Dubuque": [
+    {
+      "name": "Fenelon Place Elevator",
+      "neighborhood": "Downtown",
+      "address": "512 Fenelon Pl, Dubuque, IA",
+      "latitude": 42.4962,
+      "longitude": -90.6694,
+      "description": "Short, steep funicular railway with Mississippi River views.",
+      "sourceName": "Travel Dubuque",
+      "sourceUrl": "https://www.traveldubuque.com/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    },
+    {
+      "name": "Mines of Spain Recreation Area",
+      "neighborhood": "Dubuque",
+      "address": "Mines of Spain, Dubuque, IA",
+      "latitude": 42.4684,
+      "longitude": -90.6471,
+      "description": "Bluffs, trails, and river overlooks just south of the city.",
+      "sourceName": "Iowa DNR",
+      "sourceUrl": "https://www.iowadnr.gov/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    },
+    {
+      "name": "Shot Tower",
+      "neighborhood": "Riverfront",
+      "address": "Dubuque Shot Tower",
+      "latitude": 42.5032,
+      "longitude": -90.6596,
+      "description": "Historic riverside shot tower and industrial-history landmark.",
+      "sourceName": "Travel Dubuque",
+      "sourceUrl": "https://www.traveldubuque.com/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    }
+  ],
+  "hidden|Milwaukee": [
+    {
+      "name": "Mary Nohl House",
+      "neighborhood": "Fox Point",
+      "address": "7328 N Beach Dr, Fox Point, WI",
+      "latitude": 43.1531,
+      "longitude": -87.892,
+      "description": "Folk-art environment known for sculptural figures and lakefront weirdness; view respectfully from public areas.",
+      "sourceName": "John Michael Kohler Arts Center",
+      "sourceUrl": "https://www.jmkac.org/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    },
+    {
+      "name": "The Domes",
+      "neighborhood": "Mitchell Park",
+      "address": "524 S Layton Blvd, Milwaukee, WI",
+      "latitude": 43.0305,
+      "longitude": -87.9399,
+      "description": "Three futuristic horticultural domes; architecture-plus-garden stop.",
+      "sourceName": "Milwaukee County Parks",
+      "sourceUrl": "https://county.milwaukee.gov/EN/Parks/Explore/The-Domes",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    },
+    {
+      "name": "Black Cat Alley",
+      "neighborhood": "East Side",
+      "address": "Black Cat Alley, Milwaukee, WI",
+      "latitude": 43.0553,
+      "longitude": -87.89,
+      "description": "Outdoor mural alley on the East Side with rotating street art.",
+      "sourceName": "Black Cat Alley",
+      "sourceUrl": "https://blackcatmke.com/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    }
+  ],
+  "hidden|Madison": [
+    {
+      "name": "Olbrich Botanical Gardens",
+      "neighborhood": "East Side",
+      "address": "3330 Atwood Ave, Madison, WI",
+      "latitude": 43.0926,
+      "longitude": -89.3355,
+      "description": "Botanical gardens with a Thai pavilion; strong visual hidden-gem stop.",
+      "sourceName": "Olbrich Botanical Gardens",
+      "sourceUrl": "https://www.olbrich.org/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    },
+    {
+      "name": "Wisconsin State Capitol Observation Deck",
+      "neighborhood": "Capitol Square",
+      "address": "2 E Main St, Madison, WI",
+      "latitude": 43.0747,
+      "longitude": -89.3843,
+      "description": "Capitol dome views when open; good downtown anchor.",
+      "sourceName": "Wisconsin State Capitol",
+      "sourceUrl": "https://tours.wisconsin.gov/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    },
+    {
+      "name": "Picnic Point",
+      "neighborhood": "UW Lakeshore",
+      "address": "Picnic Point, Madison, WI",
+      "latitude": 43.0836,
+      "longitude": -89.4105,
+      "description": "Lakeside peninsula walk with views back toward campus and downtown.",
+      "sourceName": "UW Madison",
+      "sourceUrl": "https://lakeshorepreserve.wisc.edu/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    }
+  ],
+  "murals|Philadelphia": [
+    {
+      "name": "Common Threads",
+      "neighborhood": "North Broad",
+      "address": "Broad & Spring Garden St",
+      "latitude": 39.9628,
+      "longitude": -75.1626,
+      "description": "Meg Saligman's eight-story figures are among the most photographed murals in Philadelphia.",
+      "sourceName": "Mural Arts Philadelphia",
+      "sourceUrl": "https://www.muralarts.org/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    },
+    {
+      "name": "A Love Letter For You",
+      "neighborhood": "West Philadelphia",
+      "address": "Market Street corridor",
+      "latitude": 39.956,
+      "longitude": -75.215,
+      "description": "Steve Powers' Market-Frankford El mural series; best experienced as a moving elevated-train route.",
+      "sourceName": "Mural Arts Philadelphia",
+      "sourceUrl": "https://www.muralarts.org/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    },
+    {
+      "name": "How Philly Moves",
+      "neighborhood": "Southwest Philadelphia",
+      "address": "Airport area",
+      "latitude": 39.887,
+      "longitude": -75.241,
+      "description": "Large dance-themed mural project and civic art landmark near the airport corridor.",
+      "sourceName": "Mural Arts Philadelphia",
+      "sourceUrl": "https://www.muralarts.org/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    },
+    {
+      "name": "Philadelphia Muses",
+      "neighborhood": "Center City",
+      "address": "Center City, Philadelphia",
+      "latitude": 39.9524,
+      "longitude": -75.1635,
+      "description": "Center City mural celebrating arts, creativity, and the city's cultural identity.",
+      "sourceName": "Mural Arts Philadelphia",
+      "sourceUrl": "https://www.muralarts.org/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    },
+    {
+      "name": "The Roots Mural",
+      "neighborhood": "South Street",
+      "address": "South Street, Philadelphia",
+      "latitude": 39.9415,
+      "longitude": -75.1498,
+      "description": "South Street mural honoring Philadelphia's own The Roots.",
+      "sourceName": "Mural Arts Philadelphia",
+      "sourceUrl": "https://www.muralarts.org/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    },
+    {
+      "name": "Garden of Delight",
+      "neighborhood": "Spring Garden",
+      "address": "Spring Garden corridor",
+      "latitude": 39.97,
+      "longitude": -75.15,
+      "description": "Mural often included in Philly mural walking references; verify exact wall before routing.",
+      "sourceName": "Mural Arts Philadelphia",
+      "sourceUrl": "https://www.muralarts.org/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    },
+    {
+      "name": "Legacy",
+      "neighborhood": "Philadelphia",
+      "address": "Philadelphia, PA",
+      "latitude": 39.9642,
+      "longitude": -75.1677,
+      "description": "Candidate Philly mural stop; use as demo data and verify details through Mural Arts before visiting.",
+      "sourceName": "Mural Arts Philadelphia",
+      "sourceUrl": "https://www.muralarts.org/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    },
+    {
+      "name": "Untitled Amy Sherald Project",
+      "neighborhood": "Philadelphia",
+      "address": "Philadelphia, PA",
+      "latitude": 39.95,
+      "longitude": -75.16,
+      "description": "Candidate contemporary mural stop; verify current access and exact address.",
+      "sourceName": "Mural Arts Philadelphia",
+      "sourceUrl": "https://www.muralarts.org/",
+      "confidence": "medium",
+      "verificationStatus": "unverified",
+      "warningFlags": [],
+      "estimatedVisitMinutes": 20
+    }
+  ]
 };
 
 const LOADING_MSGS = [
@@ -375,7 +2039,7 @@ const STATES = {
   AL:["Birmingham","Montgomery","Mobile","Huntsville","Tuscaloosa","Selma"],
   AK:["Anchorage","Juneau","Fairbanks","Sitka","Ketchikan"],
   AZ:["Phoenix","Tucson","Sedona","Flagstaff","Scottsdale","Tempe"],
-  AR:["Little Rock","Fayetteville","Hot Springs","Bentonville","Eureka Springs"],
+  AR:["Little Rock","Fayetteville","Hot Springs","Bentonville","Eureka Springs","Mountain View"],
   CA:["Los Angeles","San Francisco","San Diego","Sacramento","Oakland","Santa Barbara","Palm Springs"],
   CO:["Denver","Boulder","Colorado Springs","Aspen","Fort Collins","Durango"],
   CT:["Hartford","New Haven","Stamford","Mystic","Bridgeport"],
@@ -384,11 +2048,11 @@ const STATES = {
   GA:["Atlanta","Savannah","Athens","Augusta","Macon","Columbus"],
   HI:["Honolulu","Hilo","Lahaina","Kailua-Kona","Kapaa"],
   ID:["Boise","Coeur d'Alene","Idaho Falls","Sun Valley","Sandpoint"],
-  IL:["Chicago","Springfield","Peoria","Champaign","Rockford","Galena","Carbondale"],
-  IN:["Indianapolis","Bloomington","Fort Wayne","South Bend","Columbus"],
-  IA:["Des Moines","Iowa City","Cedar Rapids","Dubuque","Davenport"],
+  IL:["Marion","Carbondale","Makanda","Metropolis","Alton","Casey","Springfield","Chicago","Peoria","Champaign","Rockford","Galena"],
+  IN:["Indianapolis","Bloomington","Fort Wayne","South Bend","Columbus","Evansville","New Harmony"],
+  IA:["Des Moines","Iowa City","Cedar Rapids","Dubuque","Davenport","Decorah"],
   KS:["Wichita","Kansas City","Topeka","Lawrence","Manhattan"],
-  KY:["Louisville","Lexington","Bowling Green","Paducah","Covington"],
+  KY:["Louisville","Lexington","Bowling Green","Paducah","Covington","Bardstown","Mammoth Cave"],
   LA:["New Orleans","Baton Rouge","Lafayette","Shreveport","Natchitoches"],
   ME:["Portland","Bar Harbor","Bangor","Augusta","Camden","Kennebunkport"],
   MD:["Baltimore","Annapolis","Frederick","Ocean City","Cumberland"],
@@ -396,7 +2060,7 @@ const STATES = {
   MI:["Detroit","Ann Arbor","Grand Rapids","Traverse City","Mackinac Island"],
   MN:["Minneapolis","St. Paul","Duluth","Rochester","Stillwater"],
   MS:["Jackson","Biloxi","Oxford","Natchez","Vicksburg"],
-  MO:["St. Louis","Kansas City","Springfield","Branson","Columbia","Hannibal"],
+  MO:["St. Louis","Kansas City","Springfield","Branson","Columbia","Hannibal","Rocheport","Eminence"],
   MT:["Billings","Missoula","Bozeman","Helena","Whitefish"],
   NE:["Omaha","Lincoln","Grand Island","Kearney"],
   NV:["Las Vegas","Reno","Carson City","Henderson","Lake Tahoe"],
@@ -413,14 +2077,14 @@ const STATES = {
   RI:["Providence","Newport","Pawtucket","Warwick"],
   SC:["Charleston","Columbia","Greenville","Myrtle Beach","Beaufort"],
   SD:["Sioux Falls","Rapid City","Deadwood","Pierre"],
-  TN:["Nashville","Memphis","Knoxville","Chattanooga","Gatlinburg"],
+  TN:["Nashville","Memphis","Knoxville","Chattanooga","Gatlinburg","Franklin"],
   TX:["Austin","Houston","San Antonio","Dallas","Fort Worth","El Paso","Marfa"],
   UT:["Salt Lake City","Park City","Moab","Provo","St. George"],
   VT:["Burlington","Montpelier","Stowe","Brattleboro","Woodstock"],
   VA:["Richmond","Virginia Beach","Charlottesville","Alexandria","Williamsburg","Roanoke"],
   WA:["Seattle","Spokane","Tacoma","Walla Walla","Bellingham","Leavenworth"],
   WV:["Charleston","Morgantown","Harpers Ferry","Lewisburg"],
-  WI:["Milwaukee","Madison","Green Bay","Door County","Eau Claire"],
+  WI:["Milwaukee","Madison","Green Bay","Door County","Eau Claire","House on the Rock"],
   WY:["Cheyenne","Jackson","Casper","Laramie","Cody"],
   DC:["Washington"],
 };
@@ -435,6 +2099,22 @@ const STATE_NAMES = {
 };
 const STATE_CODES = Object.keys(STATE_NAMES).sort((a,b)=> STATE_NAMES[a].localeCompare(STATE_NAMES[b]));
 const hasData = (theme,city)=> !!SAMPLE[`${theme}|${city}`];
+
+const FEATURED_ROUTES = [
+  {theme:"hidden", state:"IL", city:"Marion", title:"Marion Hidden Gems", meta:"Southern Illinois test loop"},
+  {theme:"murals", state:"IL", city:"Marion", title:"Marion Mural Walk", meta:"Downtown mural district"},
+  {theme:"hidden", state:"IL", city:"Makanda", title:"Makanda + Giant City", meta:"Boardwalk, forest, and lodge"},
+  {theme:"hidden", state:"IL", city:"Metropolis", title:"Metropolis Pop Culture", meta:"Superman, riverfront, fort"},
+  {theme:"hidden", state:"MO", city:"St. Louis", title:"St. Louis Hidden Gems", meta:"City Museum, mosaics, mounds"},
+  {theme:"murals", state:"MO", city:"St. Louis", title:"St. Louis Murals", meta:"Floodwall and street-art districts"},
+  {theme:"architecture", state:"IL", city:"Chicago", title:"Chicago Architecture", meta:"Loop, river, and design icons"},
+  {theme:"music", state:"TN", city:"Nashville", title:"Nashville Music History", meta:"Studios, venues, Music Row"},
+  {theme:"hidden", state:"KY", city:"Paducah", title:"Paducah Art + River", meta:"Floodwall murals and quilt culture"},
+  {theme:"hidden", state:"AR", city:"Hot Springs", title:"Hot Springs Oddities", meta:"Bathhouses, gardens, gangster history"},
+  {theme:"hidden", state:"WI", city:"Milwaukee", title:"Milwaukee Hidden Gems", meta:"Domes, folk art, mural alley"},
+  {theme:"hidden", state:"IA", city:"Dubuque", title:"Dubuque River Views", meta:"Funicular, bluffs, industrial history"},
+];
+
 
 /* ---------- small icons ---------- */
 const Spark=<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/></svg>;
@@ -638,6 +2318,24 @@ function App(){
             <div className="badges">
               {TRUST.map((b,i)=><span className="badge" key={i}>{b.i}{b.t}</span>)}
             </div>
+
+            <div className="featured-routes" aria-label="Featured seeded routes">
+              {FEATURED_ROUTES.map((fr,i)=>{
+                const t = THEMES.find(x=>x.id===fr.theme);
+                const count = SAMPLE[`${fr.theme}|${fr.city}`]?.length || 0;
+                return (
+                  <button className="froute" key={i} onClick={()=>{
+                    setTheme(fr.theme); setStateCode(fr.state); setCity(fr.city);
+                    window.scrollTo({top:0,behavior:"smooth"});
+                  }}>
+                    <div className="ftop"><span className="ftype">{t?.label || fr.theme}</span><span className="fcount">{count} stops</span></div>
+                    <h3>{fr.title}</h3>
+                    <p>{fr.meta}</p>
+                  </button>
+                );
+              })}
+            </div>
+            <div className="featured-note">Starter data focuses on places close enough to explore and verify from Southern Illinois.</div>
           </div>
         </div>
       </section>
@@ -647,7 +2345,7 @@ function App(){
           <div className="sec-head">
             <div className="kick">Browse by theme</div>
             <h2>Nine ways to read a city</h2>
-            <p>Every theme works in every city. Murals in Philadelphia and St. Louis ship with sample data; the rest research live.</p>
+            <p>Every theme can research live. The demo now ships with regional seed routes across Illinois, Missouri, and nearby states so the app feels useful before the Worker is connected.</p>
           </div>
           <div className="theme-grid">
             {THEMES.map(t=>(
